@@ -1,0 +1,35 @@
+﻿@model MyLMS2.Models.Material
+@{
+    Layout = "~/Views/Shared/_LayoutMaterial.cshtml";
+    ViewData["Title"] = "Material Details";
+}
+
+<h2>@Model.Title</h2>
+<p><strong>Course:</strong> @Model.Course?.Title</p>
+
+<div class="mt-3">
+    @if (!string.IsNullOrEmpty(Model.PdfPath))
+    {
+        <p><a href="@Model.PdfPath" target="_blank">📄 PDF</a></p>
+    }
+    @if (!string.IsNullOrEmpty(Model.WordPath))
+    {
+        <p><a href="@Model.WordPath" target="_blank">📝 Word</a></p>
+    }
+    @if (!string.IsNullOrEmpty(Model.PptPath))
+    {
+        <p><a href="@Model.PptPath" target="_blank">📊 PPT</a></p>
+    }
+    @if (!string.IsNullOrEmpty(Model.AudioPath))
+    {
+        <p><a href="@Model.AudioPath" target="_blank">🎧 Audio</a></p>
+    }
+    @if (!string.IsNullOrEmpty(Model.VideoPath))
+    {
+        <p><a href="@Model.VideoPath" target="_blank">🎥 Video</a></p>
+    }
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">⬅ Back</a>
+
+
