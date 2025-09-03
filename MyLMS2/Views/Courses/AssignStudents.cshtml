@@ -1,0 +1,26 @@
+﻿@model MyLMS2.Models.Course
+
+@{
+    var students = ViewBag.Students as List<MyLMS2.Models.User>;
+    var selected = ViewBag.SelectedStudents as List<string>;
+}
+
+<h2>Assign Students to @Model.Title</h2>
+
+<form asp-action="AssignStudents" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+
+    <div class="form-group">
+        @foreach (var student in students)
+        {
+            <div class="form-check">
+                <input type="checkbox" name="selectedStudents[]" value="@student.Id" />
+
+                <label>@student.UserName</label>
+            </div>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-success">Save</button>
+    <a asp-action="Assign" class="btn btn-secondary">Back</a>
+</form>

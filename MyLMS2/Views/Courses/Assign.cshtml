@@ -1,0 +1,27 @@
+﻿@model IEnumerable<MyLMS2.Models.Course>
+
+<h2>Select a Course to Assign Students</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Course</th>
+            <th>Instructor</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var course in Model)
+        {
+            <tr>
+                <td>@course.Title</td>
+                <td>@course.Instructor?.UserName</td>
+                <td>
+                    <a asp-action="AssignStudents" asp-route-id="@course.Id" class="btn btn-primary">
+                        Assign Students
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
