@@ -29,6 +29,10 @@ namespace MyLMS2.Controllers
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             if (id == null) return NotFound();
 
@@ -36,6 +40,10 @@ namespace MyLMS2.Controllers
             var course = await _context.Courses
                 .Include(c => c.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);
+            if (course == null)
+            {
+                return NotFound();
+            }
 
 
             if (course == null) return NotFound();
@@ -70,19 +78,21 @@ namespace MyLMS2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,InstructorId")] Course course)
         {
-
-                
+ 
                 _context.Add(course);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            
-
 
         }
+
 
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             if (id == null) return NotFound();
 
@@ -111,21 +121,21 @@ namespace MyLMS2.Controllers
             }
 
 
-           
-                var existingCourse = await _context.Courses.FindAsync(course.Id);
-                if (existingCourse == null)
-                {
-                    return NotFound();
-                }
 
-                
-                existingCourse.Title = course.Title;
-                existingCourse.Description = course.Description;
-                existingCourse.InstructorId = course.InstructorId;
+            var existingCourse = await _context.Courses.FindAsync(course.Id);
+            if (existingCourse == null)
+            {
+                return NotFound();
+            }
 
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-           
+
+            existingCourse.Title = course.Title;
+            existingCourse.Description = course.Description;
+            existingCourse.InstructorId = course.InstructorId;
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
         }
 
 
