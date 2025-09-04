@@ -1,0 +1,34 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h1 class="container d-flex justify-content-center align-items-center">@ViewData["Title"]</h1>
+
+<section class="page-section bg-primary text-white mb-0" id="profile" style="padding: 0rem 0;">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+        <div class="card p-4" style="width: 400px; background-color: #ffffff; color: #000;">
+            <form id="profile-form" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                <div class="mb-3">
+                    <input asp-for="Username" class="form-control" placeholder="Please choose your username." disabled />
+                </div>
+
+                <div class="mb-3">
+                    <input asp-for="Input.PhoneNumber" class="form-control" placeholder="Please enter your phone number." />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+
+                <button id="update-profile-button" type="submit" class="btn btn-primary w-100">Save</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
