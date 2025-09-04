@@ -13,19 +13,25 @@
         </li>
 
         <li class="nav-item">
+
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index"> Profile</a>
+
         </li>
     }
     else if (User.IsInRole("Instructor"))
     {
         <li class="nav-item">
+
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index"> Profile</a>
+
         </li>
     }
     else if (User.IsInRole("Student"))
     {
         <li class="nav-item">
+
             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index"> Profile</a>
+
         </li>
     }
 

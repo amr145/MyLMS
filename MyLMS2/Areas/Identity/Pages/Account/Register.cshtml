@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Create User";
     Layout = "~/Views/Shared/_Layout2.cshtml";
+
 }
 
 <h1 class="container d-flex justify-content-center align-items-center">@ViewData["Title"]</h1>
@@ -31,11 +32,13 @@
 
                 <div class="mb-3">
                     <select asp-for="Input.Role" class="form-select">
+
                         <option value="">-- Select Role --</option>
                         <option value="Admin">Admin</option>
                         <option value="Student">Student</option>
                         <option value="Instructor">Instructor</option>
                     </select>
+
                     <span asp-validation-for="Input.Role" class="text-danger"></span>
                 </div>
 
@@ -44,6 +47,7 @@
         </div>
     </div>
 </section>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
