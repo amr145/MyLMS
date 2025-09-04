@@ -66,15 +66,21 @@ namespace MyLMS2.Controllers
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             if (id == null) return NotFound();
 
 
             var course = await _context.Courses
+
              .Include(c => c.Instructor)
              .Include(c => c.Enrollments)
              //.ThenInclude(e => e.Student)   
              .FirstOrDefaultAsync(m => m.Id == id);
+
 
 
 
@@ -112,20 +118,20 @@ namespace MyLMS2.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,InstructorId")] Course course)
         {
-
-                
+ 
                 _context.Add(course);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            
-
 
         }
+
 
         // GET: Courses/Edit/5
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
+
+
             if (id == null) return NotFound();
 
             var course = await _context.Courses
@@ -159,6 +165,7 @@ namespace MyLMS2.Controllers
                 var existingCourse = await _context.Courses.FindAsync(id);
                 if (existingCourse == null) return NotFound();
 
+
                 existingCourse.Title = course.Title;
                 existingCourse.Description = course.Description;
                 existingCourse.InstructorId = course.InstructorId;
@@ -177,6 +184,7 @@ namespace MyLMS2.Controllers
             ViewData["InstructorId"] = new SelectList(instructors, "Id", "UserName", course.InstructorId);
 
             return View(course);
+
         }
 
 

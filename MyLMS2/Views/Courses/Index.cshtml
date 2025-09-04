@@ -30,9 +30,10 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+        <tr>
                 <td>@Html.DisplayFor(modelItem => item.Title)</td>
                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
+
                 <td>@item.Instructor?.UserName</td>
                 <td>
                    
@@ -46,5 +47,6 @@
                 </td>
             </tr>
         }
+
     </tbody>
 </table>
