@@ -1,18 +1,22 @@
 ﻿@model IEnumerable<MyLMS2.Models.Course>
 
 @{
-
     ViewData["Title"] = "Courses";
     Layout = "_Courses";
 }
 
 <h1>Courses</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New Course</a>
-    <a asp-action="Assign" class="btn btn-warning">Assign Students to Courses</a>
 
+<p>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-primary">Create New Course</a>
+        <a asp-action="Assign" class="btn btn-warning">Assign Students to Courses</a>
+    }
+   
 </p>
+
 
 <table class="table table-striped">
     <thead>
@@ -29,14 +33,20 @@
         <tr>
                 <td>@Html.DisplayFor(modelItem => item.Title)</td>
                 <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                <td>@item.Instructor?.UserName</td> <!-- هنا هنستخدم UserName أو Email -->
-            <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+
+                <td>@item.Instructor?.UserName</td>
+                <td>
+                   
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
-            </td>
-        </tr>
-}
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
 
     </tbody>
 </table>
