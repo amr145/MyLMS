@@ -29,18 +29,19 @@ namespace MyLMS2.Controllers
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+
+            if (id == null) return NotFound();
+
 
             var course = await _context.Courses
                 .Include(c => c.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
+
+
+            if (course == null) return NotFound();
+
+          
+
 
             return View(course);
         }
@@ -48,47 +49,58 @@ namespace MyLMS2.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
-            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id");
+
+           
+            var instructors = (from user in _context.Users
+                               join userRole in _context.UserRoles on user.Id equals userRole.UserId
+                               join role in _context.Roles on userRole.RoleId equals role.Id
+                               where role.Name == "Instructor"
+                               select user).ToList();
+
+            ViewData["InstructorId"] = new SelectList(instructors, "Id", "UserName");
+
+
             return View();
         }
 
         // POST: Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,InstructorId")] Course course)
         {
-            if (ModelState.IsValid)
-            {
+
+                
                 _context.Add(course);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id", course.InstructorId);
-            return View(course);
+            
+
+
         }
 
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var course = await _context.Courses.FindAsync(id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id", course.InstructorId);
+            if (id == null) return NotFound();
+
+            var course = await _context.Courses
+                .Include(c => c.Instructor)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null) return NotFound();
+
+            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "UserName", course.InstructorId);
+
+            
             return View(course);
         }
 
         // POST: Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,InstructorId")] Course course)
@@ -98,45 +110,38 @@ namespace MyLMS2.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
+
+           
+                var existingCourse = await _context.Courses.FindAsync(course.Id);
+                if (existingCourse == null)
                 {
-                    _context.Update(course);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CourseExists(course.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                
+                existingCourse.Title = course.Title;
+                existingCourse.Description = course.Description;
+                existingCourse.InstructorId = course.InstructorId;
+
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "Id", course.InstructorId);
-            return View(course);
+           
         }
+
 
         // GET: Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+
 
             var course = await _context.Courses
                 .Include(c => c.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
+
+
+            if (course == null) return NotFound();
+
 
             return View(course);
         }
@@ -150,9 +155,11 @@ namespace MyLMS2.Controllers
             if (course != null)
             {
                 _context.Courses.Remove(course);
+
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -160,5 +167,87 @@ namespace MyLMS2.Controllers
         {
             return _context.Courses.Any(e => e.Id == id);
         }
+
+
+        // GET: Courses/Assign
+        public async Task<IActionResult> Assign()
+        {
+            var courses = await _context.Courses
+                .Include(c => c.Instructor)
+                .ToListAsync();
+
+            return View(courses);
+        }
+
+        // GET: Courses/AssignStudents/5
+        public async Task<IActionResult> AssignStudents(int id)
+        {
+            var course = await _context.Courses
+                .Include(c => c.Enrollments)
+                .ThenInclude(e => e.Student)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null) return NotFound();
+
+           
+            var students = (from user in _context.Users
+                            join ur in _context.UserRoles on user.Id equals ur.UserId
+                            join r in _context.Roles on ur.RoleId equals r.Id
+                            where r.Name == "Student"
+                            select user).ToList();
+
+            
+            var selected = course.Enrollments?
+                .Select(e => e.StudentId)
+                .ToList() ?? new List<string>();
+
+            ViewBag.Students = students;
+            ViewBag.SelectedStudents = selected;
+
+            return View(course);
+        }
+
+        // POST: Courses/AssignStudents/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignStudents(int id, string[] selectedStudents)
+        {
+            var course = await _context.Courses
+                .Include(c => c.Enrollments)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null) return NotFound();
+
+            selectedStudents = selectedStudents ?? new string[0];
+
+            
+            var existing = course.Enrollments.Select(e => e.StudentId).ToList();
+
+            
+            var toAdd = selectedStudents.Except(existing);
+            foreach (var studentId in toAdd)
+            {
+                _context.Enrollments.Add(new Enrollment
+                {
+                    CourseId = id,
+                    StudentId = studentId
+                });
+            }
+
+           
+            var toRemove = existing.Except(selectedStudents);
+            var enrollmentsToRemove = course.Enrollments
+                .Where(e => toRemove.Contains(e.StudentId))
+                .ToList();
+
+            _context.Enrollments.RemoveRange(enrollmentsToRemove);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
     }
 }
