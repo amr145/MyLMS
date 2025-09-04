@@ -43,7 +43,7 @@ namespace MyLMS2.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
-            // نعرض الـ UserName أو Email بدل الـ Id
+           
             var instructors = (from user in _context.Users
                                join userRole in _context.UserRoles on user.Id equals userRole.UserId
                                join role in _context.Roles on userRole.RoleId equals role.Id
@@ -149,7 +149,10 @@ namespace MyLMS2.Controllers
         // GET: Courses/Assign
         public async Task<IActionResult> Assign()
         {
-            var courses = await _context.Courses.Include(c => c.Instructor).ToListAsync();
+            var courses = await _context.Courses
+                .Include(c => c.Instructor)
+                .ToListAsync();
+
             return View(courses);
         }
 
@@ -163,15 +166,20 @@ namespace MyLMS2.Controllers
 
             if (course == null) return NotFound();
 
-            // كل الطلاب اللي Role = Student
+           
             var students = (from user in _context.Users
                             join ur in _context.UserRoles on user.Id equals ur.UserId
                             join r in _context.Roles on ur.RoleId equals r.Id
                             where r.Name == "Student"
                             select user).ToList();
 
+            
+            var selected = course.Enrollments?
+                .Select(e => e.StudentId)
+                .ToList() ?? new List<string>();
+
             ViewBag.Students = students;
-            ViewBag.SelectedStudents = course.Enrollments?.Select(e => e.StudentId).ToList() ?? new List<string>();
+            ViewBag.SelectedStudents = selected;
 
             return View(course);
         }
@@ -187,22 +195,32 @@ namespace MyLMS2.Controllers
 
             if (course == null) return NotFound();
 
-            // نحذف الطلاب القدام
-            _context.Enrollments.RemoveRange(course.Enrollments);
+            selectedStudents = selectedStudents ?? new string[0];
 
-            // نضيف الطلاب الجداد
-            foreach (var studentId in selectedStudents)
+            
+            var existing = course.Enrollments.Select(e => e.StudentId).ToList();
+
+            
+            var toAdd = selectedStudents.Except(existing);
+            foreach (var studentId in toAdd)
             {
-                course.Enrollments.Add(new Enrollment
+                _context.Enrollments.Add(new Enrollment
                 {
                     CourseId = id,
                     StudentId = studentId
                 });
             }
 
+           
+            var toRemove = existing.Except(selectedStudents);
+            var enrollmentsToRemove = course.Enrollments
+                .Where(e => toRemove.Contains(e.StudentId))
+                .ToList();
+
+            _context.Enrollments.RemoveRange(enrollmentsToRemove);
+
             await _context.SaveChangesAsync();
 
-            // ✅ بعد الحفظ نرجع لصفحة الكورسات
             return RedirectToAction(nameof(Index));
         }
 

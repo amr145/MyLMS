@@ -14,8 +14,8 @@
         @foreach (var student in students)
         {
             <div class="form-check">
-                <input type="checkbox" name="selectedStudents[]" value="@student.Id" />
-
+                <input type="checkbox" name="selectedStudents" value="@student.Id"
+                       @(selected.Contains(student.Id) ? "checked" : "") />
                 <label>@student.UserName</label>
             </div>
         }
