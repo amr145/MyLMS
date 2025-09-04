@@ -29,13 +29,19 @@ namespace MyLMS2.Controllers
         // GET: Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+
             if (id == null) return NotFound();
+
 
             var course = await _context.Courses
                 .Include(c => c.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
+
             if (course == null) return NotFound();
+
+          
+
 
             return View(course);
         }
@@ -43,6 +49,7 @@ namespace MyLMS2.Controllers
         // GET: Courses/Create
         public IActionResult Create()
         {
+
            
             var instructors = (from user in _context.Users
                                join userRole in _context.UserRoles on user.Id equals userRole.UserId
@@ -52,26 +59,31 @@ namespace MyLMS2.Controllers
 
             ViewData["InstructorId"] = new SelectList(instructors, "Id", "UserName");
 
+
             return View();
         }
 
         // POST: Courses/Create
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,InstructorId")] Course course)
         {
+
                 
                 _context.Add(course);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             
 
-            
+
         }
 
         // GET: Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+
             if (id == null) return NotFound();
 
             var course = await _context.Courses
@@ -81,10 +93,14 @@ namespace MyLMS2.Controllers
             if (course == null) return NotFound();
 
             ViewData["InstructorId"] = new SelectList(_context.Users, "Id", "UserName", course.InstructorId);
+
+            
             return View(course);
         }
 
         // POST: Courses/Edit/5
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,InstructorId")] Course course)
@@ -93,6 +109,7 @@ namespace MyLMS2.Controllers
             {
                 return NotFound();
             }
+
 
            
                 var existingCourse = await _context.Courses.FindAsync(course.Id);
@@ -117,11 +134,14 @@ namespace MyLMS2.Controllers
         {
             if (id == null) return NotFound();
 
+
             var course = await _context.Courses
                 .Include(c => c.Instructor)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
+
             if (course == null) return NotFound();
+
 
             return View(course);
         }
@@ -135,8 +155,10 @@ namespace MyLMS2.Controllers
             if (course != null)
             {
                 _context.Courses.Remove(course);
+
                 await _context.SaveChangesAsync();
             }
+
 
             return RedirectToAction(nameof(Index));
         }
@@ -145,6 +167,7 @@ namespace MyLMS2.Controllers
         {
             return _context.Courses.Any(e => e.Id == id);
         }
+
 
         // GET: Courses/Assign
         public async Task<IActionResult> Assign()
@@ -223,6 +246,7 @@ namespace MyLMS2.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
 
 
     }

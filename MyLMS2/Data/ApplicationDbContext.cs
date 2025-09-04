@@ -18,21 +18,27 @@ namespace MyLMS2.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
             
+
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.Course)
                 .WithMany(c => c.Enrollments)
                 .HasForeignKey(e => e.CourseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
             
+
             modelBuilder.Entity<Enrollment>()
                 .HasOne(e => e.Student)
                 .WithMany()
                 .HasForeignKey(e => e.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
            
+
             modelBuilder.Entity<Course>()
                 .HasOne(c => c.Instructor)
                 .WithMany()
