@@ -1,0 +1,104 @@
+﻿@model MyLMS2.ViewModels.StudentHomeViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>LMS Student Home</title>
+    <link rel="icon" type="image/x-icon" href="~/assets/favicon.ico" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/css/styles.css" rel="stylesheet" />
+</head>
+<body id="page-top">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+        <div class="container px-4">
+            <a class="navbar-brand" href="#page-top">LMS Student</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarResponsive" aria-controls="navbarResponsive"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                Menu
+                <i class="bi-list"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="StudentHome">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Courses" asp-action="Index">My Courses</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content-->
+    <section class="page-section mt-5 pt-5">
+        <div class="container px-4">
+            <h2 class="mb-4">Student Dashboard</h2>
+
+            <!-- Enrolled Courses Card -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="card text-center shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">My Enrolled Courses</h5>
+                            <p class="display-6 fw-bold text-primary">@Model.EnrolledCoursesCount</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Latest Enrolled Courses List -->
+            <h4 class="mb-3">Latest Courses</h4>
+            <ul class="list-group mb-3">
+                @foreach (var course in Model.LatestCourses)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @course.Title
+                    </li>
+                }
+            </ul>
+            <a asp-controller="Courses" asp-action="Index" class="btn btn-primary">Go to My Courses</a>
+
+        </div>
+    </section>
+
+    <!-- Footer-->
+    <footer class="footer text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Location</h4>
+                    <p class="lead mb-0">
+                        2215 John Daniel Drive
+                        <br />
+                        Clark, MO 65243
+                    </p>
+                </div>
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <h4 class="text-uppercase mb-4">Around the Web</h4>
+                    <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-twitter"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-linkedin-in"></i></a>
+                    <a class="btn btn-outline-light btn-social mx-1" href="#!"><i class="fab fa-fw fa-dribbble"></i></a>
+                </div>
+                <div class="col-lg-4">
+                    <h4 class="text-uppercase mb-4">About LMS</h4>
+                    <p class="lead mb-0">
+                        LMS platform for instructors and students.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="copyright py-4 text-center text-white">
+        <div class="container"><small>Copyright &copy; Your Website 2023</small></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/scripts.js"></script>
+</body>
+</html>
