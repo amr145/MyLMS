@@ -1,45 +1,47 @@
 ﻿@model MyLMS2.Models.Module
-
 @{
+    Layout = "~/Views/Shared/_LayoutMaterial.cshtml";
     ViewData["Title"] = "Edit";
-    Layout = "_Layout1";
 }
 
-<h1>Edit</h1>
+<h2>@ViewData["Title"] Material</h2>
 
-<h4>Module</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Content" class="control-label"></label>
-                <input asp-for="Content" class="form-control" />
-                <span asp-validation-for="Content" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+<form asp-action="@ViewData["Title"]" enctype="multipart/form-data" class="mt-3">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+    <div class="mb-3">
+        <label asp-for="CourseId" class="form-label">Course</label>
+        <select asp-for="CourseId" asp-items="ViewBag.CourseId" class="form-control"></select>
+    </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    <div class="mb-3">
+        <label>Upload PDF</label>
+        <input type="file" name="pdfFile" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Upload Word</label>
+        <input type="file" name="wordFile" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Upload PowerPoint</label>
+        <input type="file" name="pptFile" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Upload Audio</label>
+        <input type="file" name="audioFile" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Video Link</label>
+        <input asp-for="VideoPath" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">💾 Save</button>
+    <a asp-action="Index" class="btn btn-secondary">⬅️ Back</a>
+</form>
