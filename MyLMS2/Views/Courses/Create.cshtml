@@ -1,49 +1,45 @@
 ﻿@model MyLMS2.Models.Course
 
 @{
-    ViewData["Title"] = "Create";
-
-    Layout = "_Courses";
-
+    ViewData["Title"] = "Create Course";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<h1>Create</h1>
+<h1 class="container d-flex justify-content-center align-items-center">@ViewData["Title"]</h1>
 
-<h4>Course</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="InstructorId" class="control-label"></label>
+<section class="page-section bg-primary text-white mb-0" id="create-course" style="padding: 0rem 0;">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+        <div class="card p-4" style="width: 400px; background-color: #ffffff; color: #000;">
+            <form asp-action="Create" method="post">
 
-                <select asp-for="InstructorId" class="form-control" asp-items="ViewBag.InstructorId"></select>
-            </div>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
+                <div class="mb-3">
+                    <input asp-for="Title" class="form-control" placeholder="Course Title" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
 
+                <div class="mb-3">
+                    <input asp-for="Description" class="form-control" placeholder="Course Description" />
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="mb-3">
+                    <select asp-for="InstructorId" class="form-select" asp-items="ViewBag.InstructorId">
+                        <option value="">-- Select Instructor --</option>
+                    </select>
+                    <span asp-validation-for="InstructorId" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-2">Create</button>
+                <a asp-action="Index" class="btn btn-secondary w-100">Back to List</a>
+            </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+</section>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

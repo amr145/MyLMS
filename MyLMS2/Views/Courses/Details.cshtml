@@ -2,33 +2,42 @@
 
 @{
     ViewData["Title"] = "Course Details";
-    Layout = "_Courses";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<h1>Course Details</h1>
+<h1 class="container d-flex justify-content-center align-items-center">@ViewData["Title"]</h1>
 
-<div>
-    <h4>@Model.Title</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">Description</dt>
-        <dd class="col-sm-10">@Model.Description</dd>
+<section class="page-section" style="background-color: #2C3E50; color: #fff; padding: 0rem 0;">
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;background: #1abc9c;">
+        <div class="card p-4" style="width: 500px; background-color: #ffffff; color: #000;">
 
-        <dt class="col-sm-2">Instructor</dt>
-        <dd class="col-sm-10">@Model.Instructor?.UserName</dd>
-    </dl>
-</div>
+            <h3 class="text-center mb-3">@Model.Title</h3>
+            <hr />
 
-<dt class="col-sm-2">Number of Students</dt>
-<dd class="col-sm-10">@Model.Enrollments?.Count() </dd>
+            <dl class="row mb-3">
+                <dt class="col-sm-4 fw-bold">Description</dt>
+                <dd class="col-sm-8">@Model.Description</dd>
+                @if (!User.IsInRole("Instructor"))
+                    {
+                <dt class="col-sm-4 fw-bold">Instructor</dt>
+                <dd class="col-sm-8">@Model.Instructor?.UserName</dd>
+                    }
 
+                <dt class="col-sm-4 fw-bold">Number of Students</dt>
+                <dd class="col-sm-8">@Model.Enrollments?.Count()</dd>
+            </dl>
 
-<div>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            <div class="d-flex justify-content-between mt-4">
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
-        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
-    }
-</div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <div>
+                        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning me-2">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

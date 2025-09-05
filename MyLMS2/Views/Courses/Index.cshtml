@@ -2,51 +2,102 @@
 
 @{
     ViewData["Title"] = "Courses";
-    Layout = "_Courses";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
+<h1 class="mb-4 text-center">Courses</h1>
 
-<h1>Courses</h1>
+<div class="card shadow-lg border-0 rounded-3">
+    <div class="card-body">
+        <div class="d-flex justify-content-center mb-4">
+            @if (User.IsInRole("Admin"))
+            {
+                <a asp-action="Create" class="btn btn-custom-dark me-2">Create New Course</a>
+                <a asp-action="Assign" class="btn btn-custom-info">Assign Students to Courses</a>
+            }
+        </div>
 
-
-<p>
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-action="Create" class="btn btn-primary">Create New Course</a>
-        <a asp-action="Assign" class="btn btn-warning">Assign Students to Courses</a>
-    }
-   
-</p>
-
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>@Html.DisplayNameFor(model => model.Title)</th>
-            <th>@Html.DisplayNameFor(model => model.Description)</th>
-            <th>Instructor</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-        <tr>
-                <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                <td>@Html.DisplayFor(modelItem => item.Description)</td>
-
-                <td>@item.Instructor?.UserName</td>
-                <td>
-                   
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-
-                    @if (User.IsInRole("Admin"))
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>@Html.DisplayNameFor(model => model.Title)</th>
+                    <th>@Html.DisplayNameFor(model => model.Description)</th>
+                    @if (!User.IsInRole("Instructor"))
                     {
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a>
-                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                        <th>Instructor</th>
                     }
-                </td>
-            </tr>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                         @if (!User.IsInRole("Instructor"))
+                            {
+                        <td>@item.Instructor?.UserName</td>
+                             }   
+                        <td class="text-center">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1">Details</a>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1">Edit</a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .btn-custom-dark {
+        background-color: #2C3E50;
+        color: #fff;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-custom-dark:hover {
+            background-color: #1A252F;
+            color: #f8f9fa;
         }
 
-    </tbody>
-</table>
+    .btn-custom-info {
+        background-color: #17a2b8;
+        color: #fff;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+        .btn-custom-info:hover {
+            background-color: #138496; 
+            color: #fff;
+        }
+
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+        border-radius: 6px;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border: none;
+        border-radius: 6px;
+        color: #212529;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        border-radius: 6px;
+    }
+</style>

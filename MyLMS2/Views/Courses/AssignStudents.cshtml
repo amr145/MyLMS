@@ -1,26 +1,51 @@
 ﻿@model MyLMS2.Models.Course
-
+@{
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
 @{
     var students = ViewBag.Students as List<MyLMS2.Models.User>;
     var selected = ViewBag.SelectedStudents as List<string>;
 }
 
-<h2>Assign Students to @Model.Title</h2>
+<section class="page-section mt-5 pt-4">
+    <div class="container">
+        <!-- Title -->
+        <h2 class="text-center fw-bold text-white py-2 rounded mb-4"
+            style="background: #1abc9c; max-width: 400px; margin: 0 auto;">
+            Assign Students to @Model.Title
+        </h2>
 
-<form asp-action="AssignStudents" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
+        <!-- Card -->
+        <div class="card shadow-lg border-0 mx-auto" style="max-width: 400px;">
+            <div class="card-body p-3">
+                <form asp-action="AssignStudents" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
 
-    <div class="form-group">
-        @foreach (var student in students)
-        {
-            <div class="form-check">
-                <input type="checkbox" name="selectedStudents" value="@student.Id"
-                       @(selected.Contains(student.Id) ? "checked" : "") />
-                <label>@student.UserName</label>
+                    <!-- Students List -->
+                    <div class="list-group mb-3">
+                        @foreach (var student in students)
+                        {
+                            <label class="list-group-item d-flex align-items-center py-1">
+                                <input class="form-check-input me-2" type="checkbox"
+                                       name="selectedStudents"
+                                       value="@student.Id"
+                                       @(selected.Contains(student.Id) ? "checked" : "") />
+                                <span class="fw-semibold">@student.UserName</span>
+                            </label>
+                        }
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <button type="submit" class="btn btn-success px-4 rounded-pill shadow-sm">
+                            Save
+                        </button>
+                        <a asp-action="Assign" class="btn btn-secondary px-4 rounded-pill shadow-sm">
+                            Back
+                        </a>
+                    </div>
+                </form>
             </div>
-        }
+        </div>
     </div>
-
-    <button type="submit" class="btn btn-success">Save</button>
-    <a asp-action="Assign" class="btn btn-secondary">Back</a>
-</form>
+</section>
