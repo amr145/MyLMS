@@ -16,9 +16,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using MyLMS2.Models;
+using Microsoft.AspNetCore.Authorization;   // ✅ ضفنا دي
 
 namespace MyLMS2.Areas.Identity.Pages.Account
 {
+    [Authorize(Roles = "Admin")]   // ✅ بس الادمن اللي يفتح الصفحة دي
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<User> _signInManager;

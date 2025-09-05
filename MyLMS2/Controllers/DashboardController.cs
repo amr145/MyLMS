@@ -4,10 +4,12 @@ using MyLMS2.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using MyLMS2.Models;
 using System.Linq;
-using System.Threading.Tasks;   // مهم عشان async/await
+using System.Threading.Tasks;  
+using Microsoft.AspNetCore.Authorization;  
 
 namespace MyLMS2.Controllers
 {
+    [Authorize(Roles = "Admin")]   
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
