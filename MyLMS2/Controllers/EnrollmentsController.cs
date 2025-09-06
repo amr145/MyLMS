@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MyLMS2.Data;
 using MyLMS2.Models;
@@ -19,152 +16,61 @@ namespace MyLMS2.Controllers
             _context = context;
         }
 
-        // GET: Enrollments
-        public async Task<IActionResult> Index()
+        // GET: Enrollments => يوجه حسب Role
+        public IActionResult Index()
         {
-            var applicationDbContext = _context.Enrollments.Include(e => e.Course).Include(e => e.Student);
-            return View(await applicationDbContext.ToListAsync());
+            if (User.IsInRole("Admin"))
+                return RedirectToAction("AdminIndex");
+
+            if (User.IsInRole("Instructor"))
+                return RedirectToAction("InstructorIndex");
+
+            if (User.IsInRole("Student"))
+                return RedirectToAction("StudentIndex");
+
+            return RedirectToAction("AdminIndex"); // fallback
         }
 
-        // GET: Enrollments/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // 👨‍💼 Admin: يشوف كل الكورسات + الدكاترة + الطلاب
+        public async Task<IActionResult> AdminIndex()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var enrollment = await _context.Enrollments
+            var data = await _context.Enrollments
                 .Include(e => e.Course)
+                .ThenInclude(c => c.Instructor)
                 .Include(e => e.Student)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (enrollment == null)
-            {
-                return NotFound();
-            }
+                .ToListAsync();
 
-            return View(enrollment);
+            return View(data);
         }
 
-        // GET: Enrollments/Create
-        public IActionResult Create()
+        // 👨‍🏫 Instructor: يشوف الكورسات اللي هو بيدرسها + الطلاب المسجلين فيها
+        public async Task<IActionResult> InstructorIndex()
         {
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id");
-            ViewData["StudentId"] = new SelectList(_context.Users, "Id", "Id");
-            return View();
-        }
+            var userId = User.Identity.Name; // أو لو عندك UserId استخدمه
 
-        // POST: Enrollments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,StudentId,CourseId")] Enrollment enrollment)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(enrollment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", enrollment.CourseId);
-            ViewData["StudentId"] = new SelectList(_context.Users, "Id", "Id", enrollment.StudentId);
-            return View(enrollment);
-        }
-
-        // GET: Enrollments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var enrollment = await _context.Enrollments.FindAsync(id);
-            if (enrollment == null)
-            {
-                return NotFound();
-            }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", enrollment.CourseId);
-            ViewData["StudentId"] = new SelectList(_context.Users, "Id", "Id", enrollment.StudentId);
-            return View(enrollment);
-        }
-
-        // POST: Enrollments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,StudentId,CourseId")] Enrollment enrollment)
-        {
-            if (id != enrollment.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(enrollment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EnrollmentExists(enrollment.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Id", enrollment.CourseId);
-            ViewData["StudentId"] = new SelectList(_context.Users, "Id", "Id", enrollment.StudentId);
-            return View(enrollment);
-        }
-
-        // GET: Enrollments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var enrollment = await _context.Enrollments
+            var data = await _context.Enrollments
                 .Include(e => e.Course)
+                .ThenInclude(c => c.Instructor)
                 .Include(e => e.Student)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (enrollment == null)
-            {
-                return NotFound();
-            }
+                .Where(e => e.Course.Instructor.UserName == userId)
+                .ToListAsync();
 
-            return View(enrollment);
+            return View(data);
         }
 
-        // POST: Enrollments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        // 🎓 Student: يشوف المواد اللي واخدها + اسم الدكتور بتاعها
+        public async Task<IActionResult> StudentIndex()
         {
-            var enrollment = await _context.Enrollments.FindAsync(id);
-            if (enrollment != null)
-            {
-                _context.Enrollments.Remove(enrollment);
-            }
+            var userId = User.Identity.Name; // أو لو عندك UserId استخدمه
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+            var data = await _context.Enrollments
+                .Include(e => e.Course)
+                .ThenInclude(c => c.Instructor)
+                .Include(e => e.Student)
+                .Where(e => e.Student.UserName == userId)
+                .ToListAsync();
 
-        private bool EnrollmentExists(int id)
-        {
-            return _context.Enrollments.Any(e => e.Id == id);
+            return View(data);
         }
     }
 }
