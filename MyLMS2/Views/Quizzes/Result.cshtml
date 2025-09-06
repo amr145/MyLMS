@@ -1,0 +1,29 @@
+﻿@model MyLMS2.Models.Quiz
+
+@{
+    ViewData["Title"] = "Quiz Result";
+    Layout = "_quizelayout";
+}
+
+<h2>Quiz Result</h2>
+
+@if (User.IsInRole("Student"))
+{
+    <div class="card p-3 mb-3">
+        <h4>@Model.Title</h4>
+        <p>@Model.Description</p>
+    </div>
+
+    <div class="alert alert-info">
+        <p><strong>Score:</strong> @ViewBag.Score / @ViewBag.Total</p>
+        <p><strong>Percentage:</strong> @ViewBag.Percentage %</p>
+    </div>
+
+    <a asp-action="Index" class="btn btn-primary">Back to Quizzes</a>
+}
+else
+{
+    <div class="alert alert-danger">
+        You do not have permission to view this result.
+    </div>
+}
