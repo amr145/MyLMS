@@ -17,7 +17,7 @@ namespace MyLMS2.Controllers
         }
 
         // GET: Users
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchEmail, string roleFilter)
         {
             var users = _userManager.Users.ToList();
             var viewModel = new List<UserWithRolesViewModel>();
@@ -25,7 +25,6 @@ namespace MyLMS2.Controllers
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-
                 viewModel.Add(new UserWithRolesViewModel
                 {
                     Id = user.Id,
@@ -34,6 +33,37 @@ namespace MyLMS2.Controllers
                     LockoutEnd = user.LockoutEnd
                 });
             }
+
+            // Apply search
+            if (!string.IsNullOrEmpty(searchEmail))
+            {
+                viewModel = viewModel
+                    .Where(u => u.Email.Contains(searchEmail, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+
+            // Apply filter
+            if (!string.IsNullOrEmpty(roleFilter))
+            {
+                switch (roleFilter)
+                {
+                    case "Admin":
+                    case "Instructor":
+                    case "Student":
+                        viewModel = viewModel.Where(u => u.Roles.Contains(roleFilter)).ToList();
+                        break;
+                    case "Disabled":
+                        viewModel = viewModel.Where(u => u.LockoutEnd.HasValue && u.LockoutEnd > DateTimeOffset.Now).ToList();
+                        break;
+                    case "Active":
+                        viewModel = viewModel.Where(u => !u.LockoutEnd.HasValue || u.LockoutEnd <= DateTimeOffset.Now).ToList();
+                        break;
+                }
+            }
+
+            // تمرير القيم للـ View
+            ViewBag.SearchEmail = searchEmail;
+            ViewBag.RoleFilter = roleFilter;
 
             return View(viewModel);
         }
