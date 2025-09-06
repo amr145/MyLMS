@@ -1,0 +1,70 @@
+﻿@model IEnumerable<MyLMS2.ViewModels.UserWithRolesViewModel>
+
+@{
+    ViewData["Title"] = "Users Management";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h1 class="mb-4 text-center">Users Management</h1>
+
+<div class="card shadow-lg border-0 rounded-3">
+    <div class="card-body">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Email</th>
+                    <th>Roles</th>
+                    <th>Status</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var isDisabled = item.LockoutEnd.HasValue && item.LockoutEnd > DateTimeOffset.Now;
+
+                    <tr>
+                        <td>@item.Email</td>
+                        <td>@item.Roles</td>
+                        <td>
+                            @if (isDisabled)
+                            {
+                                <span class="badge bg-danger">Disabled</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">Active</span>
+                            }
+                        </td>
+                        <td class="text-center">
+                     
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1">Edit</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    .btn-info {
+        background-color: #17a2b8;
+        border: none;
+        border-radius: 6px;
+    }
+
+    .btn-warning {
+        background-color: #ffc107;
+        border: none;
+        border-radius: 6px;
+        color: #212529;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        border: none;
+        border-radius: 6px;
+    }
+</style>
