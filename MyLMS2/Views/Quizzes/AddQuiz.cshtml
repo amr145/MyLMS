@@ -1,0 +1,90 @@
+﻿@model MyLMS2.Models.Quiz
+
+@{
+    ViewData["Title"] = "Build Quiz";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center text-white py-2 rounded mb-4"
+        style="background:#2C3E50; max-width:600px; margin:0 auto;">
+        📝 Create Quiz
+    </h2>
+
+    <form asp-action="SubmitQuiz" method="post" id="quizForm">
+        <input type="hidden" asp-for="Id" value="@Model.Id" />
+
+        <div id="questions-container">
+            <!-- هنا هيتحط أول سؤال -->
+        </div>
+
+        <div class="text-center mt-3">
+            <button type="button" class="btn btn-custom-dark" onclick="addQuestion()">➕ Add Another Question</button>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success px-5 py-2 fw-bold">✅ Submit Quiz</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .question-block {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .btn-custom-dark {
+        background-color: #2C3E50;
+        color: #fff;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-weight: 600;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .btn-custom-dark:hover {
+            background-color: #1A252F;
+        }
+</style>
+
+@section Scripts {
+    <script>
+        let questionCount = 0;
+
+        function addQuestion() {
+            questionCount++;
+            let questionHtml = `
+                <div class="question-block">
+                    <h5>Question ${questionCount}</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Question Text</label>
+                        <input type="text" name="Questions[${questionCount - 1}].Text" class="form-control" placeholder="Enter question..." required />
+                    </div>
+                    <div class="row">
+                        ${[1,2,3,4].map(i => `
+                            <div class="col-md-6 mb-2">
+                                <label>Option ${i}</label>
+                                <input type="text" name="Questions[${questionCount - 1}].Options[${i - 1}].Text" class="form-control" placeholder="Enter option..." required />
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="Questions[${questionCount - 1}].Options[${i - 1}].IsCorrect" value="true" />
+                                    <label class="form-check-label">Is Correct?</label>
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `;
+            document.getElementById("questions-container").insertAdjacentHTML("beforeend", questionHtml);
+        }
+
+        // أول ما الصفحة تفتح نضيف سؤال واحد افتراضي
+        window.onload = function () {
+            addQuestion();
+        };
+    </script>
+}

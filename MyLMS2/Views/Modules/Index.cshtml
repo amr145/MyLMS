@@ -2,53 +2,125 @@
 @{
     Layout = "~/Views/Shared/_Layout2.cshtml";
     ViewData["Title"] = "Materials";
-
 }
 
-<h2 class="mb-4">📚 Materials</h2>
+<div class="container mt-4">
+    <!-- العنوان -->
+    <h2 class="text-center text-white py-2 rounded mb-4"
+        style="background:#2C3E50; max-width:500px; margin:0 auto;">
+        📚 Materials
+    </h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-success mb-3">➕ Add New Material</a>
-</p>
+    <!-- زرار إضافة -->
+    <div class="d-flex justify-content-start mb-3">
+        <a asp-action="Create" class="btn btn-custom-success">➕ Add New Material</a>
+    </div>
 
-<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">@item.Title</h5>
-                    <h6 class="card-subtitle text-muted mb-2">Course: @item.Course.Title</h6>
+    <!-- الكروت -->
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg h-100 border-0">
+                    <div class="card-header text-white" style="background:#2C3E50;">
+                        <h5 class="mb-0">@item.Title</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-muted mb-2">📘 Course: @item.Course.Title</h6>
 
-                    <div class="mt-3">
-                        @if (!string.IsNullOrEmpty(item.PdfPath))
-                        {
-                            <a href="@item.PdfPath" target="_blank" class="btn btn-sm btn-outline-danger m-1">📄 PDF</a>
-                        }
-                        @if (!string.IsNullOrEmpty(item.WordPath))
-                        {
-                            <a href="@item.WordPath" target="_blank" class="btn btn-sm btn-outline-primary m-1">📝 Word</a>
-                        }
-                        @if (!string.IsNullOrEmpty(item.PptPath))
-                        {
-                            <a href="@item.PptPath" target="_blank" class="btn btn-sm btn-outline-warning m-1">📊 PPT</a>
-                        }
-                        @if (!string.IsNullOrEmpty(item.AudioPath))
-                        {
-                            <a href="@item.AudioPath" target="_blank" class="btn btn-sm btn-outline-success m-1">🎧 Audio</a>
-                        }
-                        @if (!string.IsNullOrEmpty(item.VideoPath))
-                        {
-                            <a href="@item.VideoPath" target="_blank" class="btn btn-sm btn-outline-dark m-1">🎥 Video</a>
-                        }
+                        <div class="mt-3">
+                            @if (!string.IsNullOrEmpty(item.PdfPath))
+                            {
+                                <a href="@item.PdfPath" target="_blank" class="btn btn-sm btn-outline-danger m-1">📄 PDF</a>
+                            }
+                            @if (!string.IsNullOrEmpty(item.WordPath))
+                            {
+                                <a href="@item.WordPath" target="_blank" class="btn btn-sm btn-outline-primary m-1">📝 Word</a>
+                            }
+                            @if (!string.IsNullOrEmpty(item.PptPath))
+                            {
+                                <a href="@item.PptPath" target="_blank" class="btn btn-sm btn-outline-warning m-1">📊 PPT</a>
+                            }
+                            @if (!string.IsNullOrEmpty(item.AudioPath))
+                            {
+                                <a href="@item.AudioPath" target="_blank" class="btn btn-sm btn-outline-success m-1">🎧 Audio</a>
+                            }
+                            @if (!string.IsNullOrEmpty(item.VideoPath))
+                            {
+                                <a href="@item.VideoPath" target="_blank" class="btn btn-sm btn-outline-dark m-1">🎥 Video</a>
+                            }
+                        </div>
+                    </div>
+                    <div class="card-footer text-center bg-light">
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-custom-dark m-1">✏️ Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-custom-info m-1">🔍 Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-custom-danger m-1">🗑 Delete</a>
                     </div>
                 </div>
-                <div class="card-footer text-center">
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary m-1">✏️ Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info m-1">🔍 Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger m-1">🗑 Delete</a>
-                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>
+
+<!-- CSS جوه نفس الصفحة -->
+<style>
+    .btn-custom-dark {
+        background-color: #2C3E50;
+        color: #fff;
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-weight: 600;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .btn-custom-dark:hover {
+            background-color: #1A252F;
+            color: #f8f9fa;
+        }
+
+    .btn-custom-info {
+        background-color: #17a2b8;
+        color: #fff;
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-weight: 600;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .btn-custom-info:hover {
+            background-color: #138496;
+            color: #fff;
+        }
+
+    .btn-custom-danger {
+        background-color: #dc3545;
+        color: #fff;
+        border-radius: 8px;
+        padding: 6px 14px;
+        font-weight: 600;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .btn-custom-danger:hover {
+            background-color: #b52b38;
+            color: #fff;
+        }
+
+    .btn-custom-success {
+        background-color: #2c3e50;
+        color: #fff;
+        border-radius: 8px;
+        padding: 8px 16px;
+        font-weight: 600;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .btn-custom-success:hover {
+            background-color: #1e7e34;
+            color: #fff;
+        }
+</style>

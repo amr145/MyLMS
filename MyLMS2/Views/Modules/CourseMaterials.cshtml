@@ -5,55 +5,72 @@
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<h2 class="mb-4">📚 Course Materials</h2>
+<div class="container mt-4">
+    <!-- العنوان -->
+    <h2 class="text-center text-white py-2 rounded mb-4"
+        style="background:#2C3E50; max-width:500px; margin:0 auto;">
+        📚 Course Materials
+    </h2>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">
-        No materials available for this course.
-    </div>
-}
-else
-{
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Course</th>
-                <th>Files</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Title</td>
-                    <td>@item.Course.Title</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(item.PdfPath))
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info shadow-sm text-center fw-bold" style="color:black;">
+            📌 No materials available for this course.
+        </div>
+    }
+    else
+    {
+        <!-- الكارد -->
+        <div class="card shadow mx-auto" style="max-width: 900px;">
+            <div class="card-body">
+                <table class="table table-bordered table-striped table-sm align-middle text-center mb-0">
+                    <thead style="background:#2C3E50; color:white;">
+                        <tr>
+                            <th style="width:30%">Title</th>
+                            <th style="width:30%">Course</th>
+                            <th style="width:40%">Files</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
                         {
-                            <a href="@item.PdfPath" target="_blank" class="btn btn-sm btn-outline-danger m-1">📄 PDF</a>
+                            <tr>
+                                <td class="fw-bold" style="color:black;">@item.Title</td>
+                                <td class="fw-bold" style="color:black;">@item.Course.Title</td>
+                                <td>
+                                    <div class="d-flex flex-wrap justify-content-center">
+                                        @if (!string.IsNullOrEmpty(item.PdfPath))
+                                        {
+                                            <a href="@item.PdfPath" target="_blank"
+                                               class="btn btn-sm btn-outline-danger m-1">📄 PDF</a>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.WordPath))
+                                        {
+                                            <a href="@item.WordPath" target="_blank"
+                                               class="btn btn-sm btn-outline-primary m-1">📝 Word</a>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.PptPath))
+                                        {
+                                            <a href="@item.PptPath" target="_blank"
+                                               class="btn btn-sm btn-outline-warning m-1">📊 PPT</a>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.AudioPath))
+                                        {
+                                            <a href="@item.AudioPath" target="_blank"
+                                               class="btn btn-sm btn-outline-success m-1">🎧 Audio</a>
+                                        }
+                                        @if (!string.IsNullOrEmpty(item.VideoPath))
+                                        {
+                                            <a href="@item.VideoPath" target="_blank"
+                                               class="btn btn-sm btn-outline-dark m-1">🎥 Video</a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
                         }
-                        @if (!string.IsNullOrEmpty(item.WordPath))
-                        {
-                            <a href="@item.WordPath" target="_blank" class="btn btn-sm btn-outline-primary m-1">📝 Word</a>
-                        }
-                        @if (!string.IsNullOrEmpty(item.PptPath))
-                        {
-                            <a href="@item.PptPath" target="_blank" class="btn btn-sm btn-outline-warning m-1">📊 PPT</a>
-                        }
-                        @if (!string.IsNullOrEmpty(item.AudioPath))
-                        {
-                            <a href="@item.AudioPath" target="_blank" class="btn btn-sm btn-outline-success m-1">🎧 Audio</a>
-                        }
-                        @if (!string.IsNullOrEmpty(item.VideoPath))
-                        {
-                            <a href="@item.VideoPath" target="_blank" class="btn btn-sm btn-outline-dark m-1">🎥 Video</a>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

@@ -1,54 +1,84 @@
 ﻿@model MyLMS2.Models.Module
-
 @{
     Layout = "~/Views/Shared/_Layout2.cshtml";
     ViewData["Title"] = "Module Details";
 }
 
-<h2>Module Details</h2>
+<style>
+    .custom-text {
+        color: #000000 !important; /* أسود صريح */
+    }
+</style>
 
-<div class="card p-3">
-    <h4>@Model.Title</h4>
-    <p><strong>Course:</strong> @Model.Course?.Title</p>
+<div class="container mt-4">
+    <!-- العنوان -->
+    <h2 class="text-center text-white py-2 rounded mb-4"
+        style="background:#2C3E50; max-width:500px; margin:0 auto;">
+        📑 Module Details
+    </h2>
 
-    <ul>
-        @if (!string.IsNullOrEmpty(Model.PdfPath))
-        {
-            <li>
-                <a href="@Url.Content(Model.PdfPath)" target="_blank">📄 View PDF</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.WordPath))
-        {
-            <li>
-                <a href="@Url.Content(Model.WordPath)" target="_blank">📝 View Word</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.PptPath))
-        {
-            <li>
-                <a href="@Url.Content(Model.PptPath)" target="_blank">📊 View PPT</a>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.AudioPath))
-        {
-            <li>
-                <audio controls>
-                    <source src="@Url.Content(Model.AudioPath)" type="audio/mpeg" />
-                    Your browser does not support the audio element.
-                </audio>
-            </li>
-        }
-        @if (!string.IsNullOrEmpty(Model.VideoPath))
-        {
-            <li>
-                🎬 <a href="@Model.VideoPath" target="_blank">Watch Video</a>
-            </li>
-        }
-    </ul>
+    <!-- الكارد -->
+    <div class="card shadow p-4 mx-auto" style="max-width:600px;">
+        <h4 class="mb-3 fw-bold custom-text">@Model.Title</h4>
+        <p class="fw-bold custom-text">
+            Course: <span class="custom-text">@Model.Course?.Title</span>
+        </p>
+
+        <!-- جدول مصغر -->
+        <table class="table table-bordered table-striped table-sm shadow-sm">
+            <thead class="table-secondary">
+                <tr>
+                    <th>Type</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!string.IsNullOrEmpty(Model.PdfPath))
+                {
+                    <tr>
+                        <td>📄 PDF</td>
+                        <td><a href="@Url.Content(Model.PdfPath)" target="_blank" class="btn btn-sm btn-outline-danger">View</a></td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.WordPath))
+                {
+                    <tr>
+                        <td>📝 Word</td>
+                        <td><a href="@Url.Content(Model.WordPath)" target="_blank" class="btn btn-sm btn-outline-primary">View</a></td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.PptPath))
+                {
+                    <tr>
+                        <td>📊 PPT</td>
+                        <td><a href="@Url.Content(Model.PptPath)" target="_blank" class="btn btn-sm btn-outline-warning">View</a></td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.AudioPath))
+                {
+                    <tr>
+                        <td>🎧 Audio</td>
+                        <td>
+                            <audio controls style="width: 100%;">
+                                <source src="@Url.Content(Model.AudioPath)" type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                            </audio>
+                        </td>
+                    </tr>
+                }
+                @if (!string.IsNullOrEmpty(Model.VideoPath))
+                {
+                    <tr>
+                        <td>🎬 Video</td>
+                        <td><a href="@Model.VideoPath" target="_blank" class="btn btn-sm btn-outline-dark">Watch</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- زرار رجوع -->
+    <div class="text-center mt-3">
+        <a asp-action="Index" class="btn btn-secondary">⬅️ Back to List</a>
+    </div>
 </div>
-
-<a asp-action="Index" class="btn btn-secondary mt-3">>⬅️Back to List</a>
-
-
-

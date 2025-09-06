@@ -5,70 +5,81 @@
     ViewData["Title"] = "Create Module";
 }
 
-<h2>Create New Module</h2>
+<div class="container mt-4">
+    <!-- العنوان -->
+    <h2 class="text-center text-white py-2 rounded mb-4"
+        style="background:#2C3E50; max-width:500px; margin:0 auto;">
+        📂 Create New Module
+    </h2>
 
-<form asp-action="Create" enctype="multipart/form-data" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <!-- كارد للفورم -->
+    <div class="card shadow p-4">
+        <form asp-action="Create" enctype="multipart/form-data" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <!-- Title -->
-    <div class="form-group mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" />
-        <span asp-validation-for="Title" class="text-danger"></span>
+            <!-- Title -->
+            <div class="form-group mb-3">
+                <label asp-for="Title" class="form-label fw-bold" style="color:#343a40"></label>
+                <input asp-for="Title" class="form-control" placeholder="Enter module title" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <!-- Course Dropdown -->
+            <div class="form-group mb-3">
+                <label asp-for="CourseId" class="form-label fw-bold " style="color:#343a40">Course</label>
+                <select asp-for="CourseId" asp-items="ViewBag.CourseId" class="form-control"></select>
+                <span asp-validation-for="CourseId" class="text-danger"></span>
+            </div>
+
+            <!-- File Uploads -->
+            <div class="form-group mb-3">
+                <label class="fw-bold" style="color:#343a40">📄 PDF File (optional)</label>
+                <input type="file" name="pdfFile" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="fw-bold" style="color:#343a40">📝 Word File (optional)</label>
+                <input type="file" name="wordFile" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="fw-bold" style="color:#343a40">📊 PPT File (optional)</label>
+                <input type="file" name="pptFile" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="fw-bold" style="color:#343a40">🎧 Audio File (optional)</label>
+                <input type="file" name="audioFile" class="form-control" />
+            </div>
+
+            <div class="form-group mb-3">
+                <label class="fw-bold" style="color:#343a40">🎥 Video File (optional)</label>
+                <input type="file" name="videoFile" class="form-control" />
+            </div>
+
+            <!-- الأزرار -->
+            <div class="d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-primary">💾 Save</button>
+                <a asp-action="Index" class="btn btn-secondary">⬅️ Back to List</a>
+            </div>
+
+            <!-- رسائل النجاح / الخطأ -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success mt-3 shadow-sm">@TempData["SuccessMessage"]</div>
+            }
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger mt-3 shadow-sm">@TempData["ErrorMessage"]</div>
+            }
+
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+        </form>
     </div>
-
-    <!-- Course Dropdown -->
-    <div class="form-group mb-3">
-        <label asp-for="CourseId" class="form-label">Course</label>
-        <select asp-for="CourseId" asp-items="ViewBag.CourseId" class="form-control"></select>
-        <span asp-validation-for="CourseId" class="text-danger"></span>
-    </div>
-
-    <!-- File Uploads -->
-    <div class="form-group mb-3">
-        <label>PDF File (optional)</label>
-        <input type="file" name="pdfFile" class="form-control" />
-    </div>
-
-    <div class="form-group mb-3">
-        <label>Word File (optional)</label>
-        <input type="file" name="wordFile" class="form-control" />
-    </div>
-
-    <div class="form-group mb-3">
-        <label>PPT File (optional)</label>
-        <input type="file" name="pptFile" class="form-control" />
-    </div>
-
-    <div class="form-group mb-3">
-        <label>Audio File (optional)</label>
-        <input type="file" name="audioFile" class="form-control" />
-    </div>
-
-    <div class="form-group mb-3">
-        <label>Video File (optional)</label>
-        <input type="file" name="videoFile" class="form-control" />
-    </div>
-
-    <button type="submit" class="btn btn-primary">💾 Save</button>
-    <a asp-action="Index" class="btn btn-secondary">>⬅️Back to List</a>
-
-    @if (TempData["SuccessMessage"] != null)
-    {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-    }
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
-    }
-
-    <div asp-validation-summary="All" class="text-danger mb-3"></div>
-</form>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-
-

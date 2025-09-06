@@ -12,10 +12,10 @@
         public int Duration { get; set; }
 
         // الكورس اللي يخص الكويز
-        public int CourseId { get; set; }
-        public Course Course { get; set; }
+        public int? CourseId { get; set; }
+        public Course? Course { get; set; }
 
-        public ICollection<Question> Questions { get; set; }
+        public ICollection<Question>? Questions { get; set; }
     }
 
     public class Question

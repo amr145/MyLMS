@@ -2,49 +2,77 @@
 
 @{
     ViewData["Title"] = "Take Quiz";
-    Layout = "_quizelayout";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<h2>@Model.Title</h2>
-<p>@Model.Description</p>
-<p><strong>Duration:</strong> @Model.Duration minutes</p>
+<div class="container mt-4">
+    <h2 class="text-center text-white py-2 rounded mb-4"
+        style="background:#2C3E50; max-width:600px; margin:0 auto; font-weight:bold;">
+        📝 @Model.Title
+    </h2>
 
-@if (User.IsInRole("Student"))
-{
-    <form asp-action="SubmitQuiz" method="post">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="quizId" value="@Model.Id" />
+    <p class="text-white fw-bold">New Final Exam</p>
+    <p class="text-white fw-bold">Duration: @Model.Duration minutes</p>
 
-        @for (int i = 0; i < (Model.Questions?.Count() ?? 0); i++)
-        {
-            var question = Model.Questions.ElementAt(i);
+    @if (User.IsInRole("Student"))
+    {
+        <form asp-action="SubmitQuiz" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="quizId" value="@Model.Id" />
 
-            <div class="card mb-3">
-                <div class="card-header">
-                    <strong>Q@(i + 1):</strong> @question.Text
+            @for (int i = 0; i < (Model.Questions?.Count() ?? 0); i++)
+            {
+                var question = Model.Questions.ElementAt(i);
+
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-header" style="background:#2C3E50; color:#fff; font-weight:bold;">
+                        Q@(i + 1): @question.Text
+                    </div>
+                    <div class="card-body">
+                        @foreach (var option in question.AnswerOptions)
+                        {
+                            <div class="form-check mb-2">
+                                <input type="radio"
+                                       class="form-check-input"
+                                       name="answers[@question.Id]"
+                                       value="@option.Id"
+                                       required />
+                                <label class="form-check-label" style="color:#000;">@option.Text</label>
+                            </div>
+                        }
+                    </div>
                 </div>
-                <div class="card-body">
-                    @foreach (var option in question.AnswerOptions)
-                    {
-                        <div class="form-check">
-                            <input type="radio"
-                                   class="form-check-input"
-                                   name="answers[@question.Id]"
-                                   value="@option.Id"
-                                   required />
-                            <label class="form-check-label">@option.Text</label>
-                        </div>
-                    }
-                </div>
+            }
+
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-custom-dark">💾 Submit Quiz</button>
             </div>
-        }
+        </form>
+    }
+    else
+    {
+        <div class="alert alert-danger text-center">
+            You do not have permission to take this quiz.
+        </div>
+    }
+</div>
 
-        <button type="submit" class="btn btn-success">Submit Quiz</button>
-    </form>
-}
-else
-{
-    <div class="alert alert-danger">
-        You do not have permission to take this quiz.
-    </div>
-}
+<style>
+    .card {
+        border-radius: 12px;
+    }
+
+    .btn-custom-dark {
+        background-color: #2C3E50;
+        color: #fff;
+        border-radius: 6px;
+        padding: 8px 20px;
+        font-weight: 600;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .btn-custom-dark:hover {
+            background-color: #1A252F;
+        }
+</style>

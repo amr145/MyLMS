@@ -2,58 +2,92 @@
 
 @{
     ViewData["Title"] = "Quizzes";
-    Layout = "_quizelayout";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<h2>All Quizzes</h2>
+<div class="container mt-4">
+    <h2 class="text-center text-white py-2 rounded mb-4"
+        style="background:#2C3E50; max-width:400px; margin:0 auto;">
+        📚 All Quizzes
+    </h2>
 
-@if (User.IsInRole("Admin"))
-{
-    <p>
-        <a asp-action="Create" class="btn btn-primary">+ Create New Quiz</a>
-    </p>
-}
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mb-3 text-center">
+            <a asp-action="Create" class="btn btn-success">➕ Create New Quiz</a>
+        </div>
+    }
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Duration (mins)</th>
-            <th>Course</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var quiz in Model)
-        {
-            <tr>
-                <td>@quiz.Title</td>
-                <td>@quiz.Description</td>
-                <td>@quiz.Duration</td>
-                <td>@quiz.Course?.Title</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@quiz.Id" class="btn btn-secondary btn-sm">Details</a>
-
-                    @* زر الـ TakeQuiz يظهر للطالب فقط *@
-                    @if (User.IsInRole("Student"))
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-dark text-center">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Duration (mins)</th>
+                        <th>Course</th>
+                        <th style="width: 300px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
                     {
-                        <a asp-action="TakeQuiz" asp-route-id="@quiz.Id" class="btn btn-success btn-sm">Take Quiz</a>
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No quizzes available.</td>
+                        </tr>
                     }
-
-                    @* زر الـ AddQuestion يظهر للانستركتور فقط *@
-                    @if (User.IsInRole("Instructor"))
+                    else
                     {
-                        <a asp-action="AddQuestion" asp-route-quizId="@quiz.Id" class="btn btn-warning btn-sm">+ Add Question</a>
-                    }
+                        @foreach (var quiz in Model)
+                        {
+                            <tr>
+                                <td>@quiz.Title</td>
+                                <td>@quiz.Description</td>
+                                <td class="text-center">@quiz.Duration</td>
+                                <td>@(quiz.Course != null ? quiz.Course.Title : Html.Raw("<span class='text-muted'>No course</span>"))</td>
+                                <td class="text-center">
+                                    @if (User.IsInRole("Instructor") || User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Details" asp-route-id="@quiz.Id" class="btn btn-secondary btn-sm me-1">📄 Details</a>
+                                    }
 
-                    @* زر الـ Edit يظهر للأدمن فقط *@
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <a asp-action="Edit" asp-route-id="@quiz.Id" class="btn btn-info btn-sm">Edit</a>
+                                    @if (User.IsInRole("Student"))
+                                    {
+                                        <a asp-action="TakeQuiz" asp-route-id="@quiz.Id" class="btn btn-success btn-sm me-1">▶️ Take Quiz</a>
+                                    }
+
+                                    @if (User.IsInRole("Instructor"))
+                                    {
+                                        <a asp-action="BuildQuiz" asp-route-quizId="@quiz.Id" class="btn btn-warning btn-sm me-1">🛠 Build Quiz</a>
+                                    }
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <form asp-action="Delete" asp-route-id="@quiz.Id" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                    onclick="return confirm('Are you sure you want to delete this quiz?');">
+                                                🗑 Delete
+                                            </button>
+                                        </form>
+                                    }
+                                </td>
+                            </tr>
+                        }
                     }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn {
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    .card {
+        border-radius: 12px;
+    }
+</style>
