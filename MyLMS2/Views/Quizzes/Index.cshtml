@@ -1,0 +1,59 @@
+﻿@model IEnumerable<MyLMS2.Models.Quiz>
+
+@{
+    ViewData["Title"] = "Quizzes";
+    Layout = "_quizelayout";
+}
+
+<h2>All Quizzes</h2>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">+ Create New Quiz</a>
+    </p>
+}
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Duration (mins)</th>
+            <th>Course</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var quiz in Model)
+        {
+            <tr>
+                <td>@quiz.Title</td>
+                <td>@quiz.Description</td>
+                <td>@quiz.Duration</td>
+                <td>@quiz.Course?.Title</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@quiz.Id" class="btn btn-secondary btn-sm">Details</a>
+
+                    @* زر الـ TakeQuiz يظهر للطالب فقط *@
+                    @if (User.IsInRole("Student"))
+                    {
+                        <a asp-action="TakeQuiz" asp-route-id="@quiz.Id" class="btn btn-success btn-sm">Take Quiz</a>
+                    }
+
+                    @* زر الـ AddQuestion يظهر للانستركتور فقط *@
+                    @if (User.IsInRole("Instructor"))
+                    {
+                        <a asp-action="AddQuestion" asp-route-quizId="@quiz.Id" class="btn btn-warning btn-sm">+ Add Question</a>
+                    }
+
+                    @* زر الـ Edit يظهر للأدمن فقط *@
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@quiz.Id" class="btn btn-info btn-sm">Edit</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

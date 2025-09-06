@@ -1,0 +1,40 @@
+﻿@model MyLMS2.Models.Quiz
+@{
+    ViewData["Title"] = "Create Quiz";
+    Layout = "_quizelayout";
+}
+
+@if (User.IsInRole("Admin"))
+{
+    <h2>Create New Quiz</h2>
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input asp-for="Title" class="form-control" />
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Duration"></label>
+            <input asp-for="Duration" type="number" class="form-control" />
+            <span asp-validation-for="Duration" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="CourseId" class="control-label"></label>
+            <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
+            <span asp-validation-for="CourseId" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+}
+else
+{
+    <div class="alert alert-danger">
+        You do not have permission to create a quiz.
+    </div>
+}

@@ -1,0 +1,50 @@
+﻿@model MyLMS2.Models.Quiz
+
+@{
+    ViewData["Title"] = "Take Quiz";
+    Layout = "_quizelayout";
+}
+
+<h2>@Model.Title</h2>
+<p>@Model.Description</p>
+<p><strong>Duration:</strong> @Model.Duration minutes</p>
+
+@if (User.IsInRole("Student"))
+{
+    <form asp-action="SubmitQuiz" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="quizId" value="@Model.Id" />
+
+        @for (int i = 0; i < (Model.Questions?.Count() ?? 0); i++)
+        {
+            var question = Model.Questions.ElementAt(i);
+
+            <div class="card mb-3">
+                <div class="card-header">
+                    <strong>Q@(i + 1):</strong> @question.Text
+                </div>
+                <div class="card-body">
+                    @foreach (var option in question.AnswerOptions)
+                    {
+                        <div class="form-check">
+                            <input type="radio"
+                                   class="form-check-input"
+                                   name="answers[@question.Id]"
+                                   value="@option.Id"
+                                   required />
+                            <label class="form-check-label">@option.Text</label>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+        <button type="submit" class="btn btn-success">Submit Quiz</button>
+    </form>
+}
+else
+{
+    <div class="alert alert-danger">
+        You do not have permission to take this quiz.
+    </div>
+}

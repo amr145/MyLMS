@@ -4,48 +4,80 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+<style>
+    .navbar-nav .nav-link {
+        font-size: 0.9rem;
+        color: white !important;
+        transition: color 0.3s ease;
+        padding: 5px 10px;
+    }
+
+        .navbar-nav .nav-link:hover {
+            color: #17a2b8 !important;
+        }
+
+    .logout-btn {
+        background: none;
+        border: none;
+        font-size: 0.9rem;
+        color: white !important;
+        padding: 5px 10px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+        .logout-btn:hover {
+            color: red !important;
+        }
+
+    .nav-item form {
+        display: inline;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
 @if (SignInManager.IsSignedIn(User))
 {
     if (User.IsInRole("Admin"))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Create user</a>
+            <a class="nav-link" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
         </li>
-
         <li class="nav-item">
-
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index"> Profile</a>
-
+            <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-area="" asp-controller="Enrollments" asp-action="Index">Enrollments</a>
         </li>
     }
     else if (User.IsInRole("Instructor"))
     {
         <li class="nav-item">
-
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index"> Profile</a>
-
+            <a class="nav-link" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
         </li>
     }
     else if (User.IsInRole("Student"))
     {
         <li class="nav-item">
-
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index"> Profile</a>
-
+            <a class="nav-link" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
         </li>
     }
 
     <li class="nav-item">
-        <form class="d-inline" asp-area="Identity" asp-page="/Account/Logout"
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a>
+    </li>
+
+    <li class="nav-item">
+        <form asp-area="Identity" asp-page="/Account/Logout"
               asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="nav-link btn btn-link text-dark p-0">Logout</button>
+            <button type="submit" class="logout-btn">LOGOUT</button>
         </form>
     </li>
 }
 else
 {
     <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">LOGIN</a>
     </li>
 }
-</ul>

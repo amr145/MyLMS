@@ -1,0 +1,41 @@
+﻿@model MyLMS2.Models.Quiz
+
+@{
+    ViewData["Title"] = "Quiz Details";
+    Layout = "_quizelayout";
+}
+
+<h2>@Model.Title</h2>
+<p>@Model.Description</p>
+<p><b>Duration:</b> @Model.Duration minutes</p>
+
+@if (User.IsInRole("Admin") || User.IsInRole("Instructor"))
+{
+    <h3>Students' Scores</h3>
+    @if (ViewBag.StudentsScores != null && (ViewBag.StudentsScores as List<MyLMS2.Models.StudentScoreViewModel>).Any())
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Score</th>
+                    <th>Percentage</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var s in ViewBag.StudentsScores as List<MyLMS2.Models.StudentScoreViewModel>)
+                {
+                    <tr>
+                        <td>@s.StudentName</td>
+                        <td>@s.Score / @s.Total</td>
+                        <td>@s.Percentage %</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No students have taken this quiz yet.</p>
+    }
+}
