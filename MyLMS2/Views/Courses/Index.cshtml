@@ -26,6 +26,18 @@
                         <th>Instructor</th>
                     }
                     <th class="text-center">Actions</th>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <th>Materials</th>
+                    }
+                    @if (User.IsInRole("Student"))
+                    {
+                        <th>Materials</th>
+                    }
+                    @if (User.IsInRole("Instructor"))
+                    {
+                        <th>Materials</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -46,6 +58,36 @@
                                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
                             }
                         </td>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <td>
+                                <a asp-action="Materials" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
+                            </td>
+                        }
+                        @if (User.IsInRole("Student"))
+                        {
+                            <td>
+                                <a asp-controller="Modules" asp-action="MyMaterials" asp-route-courseId="@item.Id" class="btn btn-sm btn-info">
+                                    Details
+                                </a>
+                            </td>
+                        }
+                        @if (User.IsInRole("Instructor"))
+                        {
+                            <td>
+                                <!-- زرار لعرض الماتيريالز (MyMaterials مثلاً) -->
+                                <a asp-controller="Modules" asp-action="CourseMaterials" asp-route-courseId="@item.Id" class="btn btn-sm btn-info">
+                                    📂 View
+                                </a>
+
+                                <!-- زرار لإدارة الماتيريالز -->
+                                <a asp-controller="Modules" asp-action="Index" asp-route-courseId="@item.Id" class="btn btn-sm btn-primary">
+                                    ⚙️ Manage
+                                </a>
+                            </td>
+                        }
+
+
                     </tr>
                 }
             </tbody>

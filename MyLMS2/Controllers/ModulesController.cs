@@ -36,6 +36,35 @@ namespace MyLMS2.Controllers
         }
 
         [Authorize(Roles = "Instructor")]
+        public async Task<IActionResult> CourseMaterials(int courseId)
+        {
+            var modules = await _context.Modules
+                .Include(m => m.Course)
+                .Where(m => m.CourseId == courseId)
+                .ToListAsync();
+
+            if (!modules.Any())
+            {
+                TempData["ErrorMessage"] = "No materials available for this course.";
+                return RedirectToAction("Index", "Courses");
+            }
+
+            return View(modules);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var module = await _context.Modules
+                .Include(m => m.Course)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (module == null) return NotFound();
+
+            return View(module);
+        }
+
+
+        [Authorize(Roles = "Instructor")]
         public IActionResult Create()
         {
             var userId = _userManager.GetUserId(User);
@@ -47,31 +76,39 @@ namespace MyLMS2.Controllers
 
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> Create(Module module, IFormFile pdfFile, IFormFile wordFile, IFormFile pptFile, IFormFile audioFile)
+        public async Task<IActionResult> Create(Module module, IFormFile? pdfFile, IFormFile? wordFile, IFormFile? pptFile, IFormFile? audioFile)
         {
-            if (ModelState.IsValid)
-            {
-                module.PdfPath = SaveFiles(pdfFile, "pdfs");
-                module.WordPath = SaveFiles(wordFile, "words");
-                module.PptPath = SaveFiles(pptFile, "ppts");
-                module.AudioPath = SaveFiles(audioFile, "audios");
+            
+            ModelState.Remove("pdfFile");
+            ModelState.Remove("wordFile");
+            ModelState.Remove("pptFile");
+            ModelState.Remove("audioFile");
+            ModelState.Remove("videoFile");
+            ModelState.Remove("Course"); 
 
-                _context.Add(module);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+            if (!ModelState.IsValid)
+            {
+                var userId = _userManager.GetUserId(User);
+                ViewData["CourseId"] = new SelectList(
+                    _context.Courses.Where(c => c.InstructorId == userId),
+                    "Id", "Title", module.CourseId
+                );
+                return View(module);
             }
 
-            var userId = _userManager.GetUserId(User);
-            ViewData["CourseId"] = new SelectList(
-                _context.Courses.Where(c => c.InstructorId == userId),
-                "Id", "Title", module.CourseId
-            );
+            module.PdfPath = SaveFiles(pdfFile, "pdfs");
+            module.WordPath = SaveFiles(wordFile, "words");
+            module.PptPath = SaveFiles(pptFile, "ppts");
+            module.AudioPath = SaveFiles(audioFile, "audios");
 
-            return View(module);
+            _context.Add(module);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Module created successfully.";
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Roles = "Instructor")]
@@ -88,44 +125,44 @@ namespace MyLMS2.Controllers
 
             return View(module);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Instructor")]
-        public async Task<IActionResult> Edit(int id, Module module, IFormFile pdfFile, IFormFile wordFile, IFormFile pptFile, IFormFile audioFile)
+        public async Task<IActionResult> Edit(int id,Module module,IFormFile? pdfFile,IFormFile? wordFile,IFormFile? pptFile,IFormFile? audioFile,IFormFile? videoFile)
         {
             if (id != module.Id) return NotFound();
 
-            if (ModelState.IsValid)
+            ModelState.Remove("pdfFile");
+            ModelState.Remove("wordFile");
+            ModelState.Remove("pptFile");
+            ModelState.Remove("audioFile");
+            ModelState.Remove("videoFile");
+            ModelState.Remove("Course");
+
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    var existingModule = await _context.Modules.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
-                    if (existingModule == null) return NotFound();
-
-                    module.PdfPath = pdfFile != null ? SaveFiles(pdfFile, "pdfs") : existingModule.PdfPath;
-                    module.WordPath = wordFile != null ? SaveFiles(wordFile, "words") : existingModule.WordPath;
-                    module.PptPath = pptFile != null ? SaveFiles(pptFile, "ppts") : existingModule.PptPath;
-                    module.AudioPath = audioFile != null ? SaveFiles(audioFile, "audios") : existingModule.AudioPath;
-
-                    _context.Update(module);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_context.Modules.Any(e => e.Id == module.Id)) return NotFound();
-                    else throw;
-                }
-                return RedirectToAction(nameof(Index));
+                var userId = _userManager.GetUserId(User);
+                ViewData["CourseId"] = new SelectList(
+                    _context.Courses.Where(c => c.InstructorId == userId),
+                    "Id", "Title", module.CourseId
+                );
+                return View(module);
             }
 
-            var userId = _userManager.GetUserId(User);
-            ViewData["CourseId"] = new SelectList(
-                _context.Courses.Where(c => c.InstructorId == userId),
-                "Id", "Title", module.CourseId
-            );
+            var existing = await _context.Modules.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+            if (existing is null) return NotFound();
 
-            return View(module);
+            module.PdfPath = pdfFile != null ? SaveFiles(pdfFile, "pdfs") : existing.PdfPath;
+            module.WordPath = wordFile != null ? SaveFiles(wordFile, "words") : existing.WordPath;
+            module.PptPath = pptFile != null ? SaveFiles(pptFile, "ppts") : existing.PptPath;
+            module.AudioPath = audioFile != null ? SaveFiles(audioFile, "audios") : existing.AudioPath;
+            module.VideoPath = videoFile != null ? SaveFiles(videoFile, "videos") : existing.VideoPath;
+
+            _context.Update(module);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = "Module updated successfully.";
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize(Roles = "Instructor")]
@@ -155,8 +192,9 @@ namespace MyLMS2.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
         [Authorize(Roles = "Student")]
-        public async Task<IActionResult> MyMaterials()
+        public async Task<IActionResult> MyMaterials(int? courseId)
         {
             var userId = _userManager.GetUserId(User);
 
@@ -165,10 +203,16 @@ namespace MyLMS2.Controllers
                 .Select(e => e.CourseId)
                 .ToListAsync();
 
-            var modules = await _context.Modules
+            var query = _context.Modules
                 .Include(m => m.Course)
-                .Where(m => enrolledCourses.Contains(m.CourseId))
-                .ToListAsync();
+                .Where(m => enrolledCourses.Contains(m.CourseId));
+
+            if (courseId.HasValue)
+            {
+                query = query.Where(m => m.CourseId == courseId.Value);
+            }
+
+            var modules = await query.ToListAsync();
 
             return View(modules);
         }

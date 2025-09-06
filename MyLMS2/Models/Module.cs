@@ -1,4 +1,6 @@
-﻿namespace MyLMS2.Models
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace MyLMS2.Models
 {
     public class Module
     {
@@ -12,6 +14,7 @@
         public string? VideoPath { get; set; }
 
         public int CourseId { get; set; }
+        [ValidateNever]
         public Course Course { get; set; }
     }
 }
