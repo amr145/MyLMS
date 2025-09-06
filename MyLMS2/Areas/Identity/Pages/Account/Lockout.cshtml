@@ -1,7 +1,7 @@
 ﻿@page
-@model AccessDeniedModel
+@model LockoutModel
 @{
-    ViewData["Title"] = "Access Denied";
+    ViewData["Title"] = "Locked Out";
     Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
@@ -11,24 +11,24 @@
 
         <!-- Icon -->
         <div class="mb-4">
-            <div class="display-1" style="font-size:6rem; color:#e74c3c;">🚫</div>
+            <div class="display-1" style="font-size:6rem; color:#f39c12;">🔒</div>
         </div>
 
         <!-- Title -->
         <h1 class="fw-bold mb-3" style="font-size:2.5rem; letter-spacing:2px; color:#ecf0f1;">
-            Access Denied
+            @ViewData["Title"]
         </h1>
 
         <!-- Message -->
         <p class="lead mb-4" style="color:#bdc3c7;">
-            Sorry, you do not have permission to access this page.
+            This account has been locked out, please try again later.
         </p>
 
         <!-- Button -->
         <a class="btn btn-lg px-5 py-3 fw-bold text-uppercase"
            href="/"
-           style="background: linear-gradient(90deg, #1abc9c, #16a085); color:white; border:none; border-radius:50px; box-shadow:0 5px 20px rgba(0,0,0,0.4); transition:all 0.3s;">
-            🏠 Back to Home
+           style="background: linear-gradient(90deg, #f39c12, #e67e22); color:white; border:none; border-radius:50px; box-shadow:0 5px 20px rgba(0,0,0,0.4); transition:all 0.3s;">
+            🔙 Back to Home
         </a>
     </div>
 </div>
