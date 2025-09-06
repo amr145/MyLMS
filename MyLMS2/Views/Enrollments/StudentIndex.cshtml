@@ -1,0 +1,43 @@
+﻿@model IEnumerable<MyLMS2.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "My Courses (Student)";
+    var groupedCourses = Model.GroupBy(e => e.Course).ToList();
+    Layout = "_Layout2";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3 mx-auto" style="max-width:600px;">
+        <div class="card-header text-white" style="background-color: #2C3E50;">
+            <h4 class="mb-0">🎓 My Courses</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Course Title</th>
+                        <th>Instructor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var group in groupedCourses)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@group.Key?.Title</td>
+                            <td>
+                                @if (group.Key?.Instructor != null)
+                                {
+                                    <span class="fw-semibold">@group.Key.Instructor.UserName</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No instructor assigned</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

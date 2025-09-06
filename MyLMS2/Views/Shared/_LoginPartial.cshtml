@@ -47,28 +47,35 @@
         <li class="nav-item">
             <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-area="" asp-controller="Enrollments" asp-action="Index">Enrollments</a>
-        </li>
     }
     else if (User.IsInRole("Instructor"))
     {
         <li class="nav-item">
             <a class="nav-link" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
         </li>
+        <li class="nav-item"><a class="nav-link" asp-controller="Modules" asp-action="Index">Materials</a></li>
     }
     else if (User.IsInRole("Student"))
     {
         <li class="nav-item">
             <a class="nav-link" asp-area="" asp-controller="Courses" asp-action="Index">Courses</a>
+
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-controller="Modules" asp-action="MyMaterials">My Materials</a>
         </li>
     }
+    <li class="nav-item">
+        <a class="nav-link" asp-area="" asp-controller="Enrollments" asp-action="Index">Enrollments</a>
+    </li>
 
     <li class="nav-item">
         <a class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a>
     </li>
 
     <li class="nav-item">
+
+
         <form asp-area="Identity" asp-page="/Account/Logout"
               asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
             <button type="submit" class="logout-btn">LOGOUT</button>

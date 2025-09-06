@@ -1,0 +1,73 @@
+﻿@model IEnumerable<MyLMS2.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "My Courses (Instructor)";
+    var groupedCourses = Model.GroupBy(e => e.Course).ToList();
+    Layout = "_Layout2";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-3 mx-auto" style="max-width:600px;">
+        <div class="card-header text-white" style="background-color: #2C3E50;">
+            <h4 class="mb-0">👨‍🏫 My Courses</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Course Title</th>
+                        <th>Students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var group in groupedCourses)
+                    {
+                        <tr>
+                            <td class="fw-semibold">@group.Key?.Title</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-info"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#studentsModal-@group.Key?.Id">
+                                    👥 View Students
+                                </button>
+
+                                <!-- Modal -->
+                                <div class="modal fade" id="studentsModal-@group.Key?.Id" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content shadow-lg border-0">
+                                            <div class="modal-header text-white" style="background-color:#1abc9c;">
+                                                <h5 class="modal-title">Students in @group.Key?.Title</h5>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                @if (group.Any())
+                                                {
+                                                    <ul class="list-group list-group-flush">
+                                                        @foreach (var enrollment in group)
+                                                        {
+                                                            <li class="list-group-item">
+                                                                @enrollment.Student?.UserName
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                                else
+                                                {
+                                                    <p class="text-muted">No students enrolled yet.</p>
+                                                }
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
