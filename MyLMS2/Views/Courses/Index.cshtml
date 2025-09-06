@@ -26,18 +26,7 @@
                         <th>Instructor</th>
                     }
                     <th class="text-center">Actions</th>
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <th>Materials</th>
-                    }
-                    @if (User.IsInRole("Student"))
-                    {
-                        <th>Materials</th>
-                    }
-                    @if (User.IsInRole("Instructor"))
-                    {
-                        <th>Materials</th>
-                    }
+                    <th>Materials</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,48 +35,34 @@
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Title)</td>
                         <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                         @if (!User.IsInRole("Instructor"))
-                            {
-                        <td>@item.Instructor?.UserName</td>
-                             }   
+                        @if (!User.IsInRole("Instructor"))
+                        {
+                            <td>@item.Instructor?.UserName</td>
+                        }
                         <td class="text-center">
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1">Details</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-custom-dark me-1">Details</a>
                             @if (User.IsInRole("Admin"))
                             {
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1">Edit</a>
                                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a>
                             }
                         </td>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <td>
-                                <a asp-action="Materials" asp-route-id="@item.Id" class="btn btn-sm btn-info">Details</a>
-                            </td>
-                        }
-                        @if (User.IsInRole("Student"))
-                        {
-                            <td>
-                                <a asp-controller="Modules" asp-action="MyMaterials" asp-route-courseId="@item.Id" class="btn btn-sm btn-info">
-                                    Details
-                                </a>
-                            </td>
-                        }
-                        @if (User.IsInRole("Instructor"))
-                        {
-                            <td>
-                                <!-- زرار لعرض الماتيريالز (MyMaterials مثلاً) -->
-                                <a asp-controller="Modules" asp-action="CourseMaterials" asp-route-courseId="@item.Id" class="btn btn-sm btn-info">
-                                    📂 View
-                                </a>
-
-                                <!-- زرار لإدارة الماتيريالز -->
-                                <a asp-controller="Modules" asp-action="Index" asp-route-courseId="@item.Id" class="btn btn-sm btn-primary">
-                                    ⚙️ Manage
-                                </a>
-                            </td>
-                        }
-
-
+                        <td>
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <a asp-action="Materials" asp-route-id="@item.Id" class="btn btn-sm btn-custom-dark me-1">📂 View</a>
+                                <a asp-controller="Modules" asp-action="Index" asp-route-courseId="@item.Id" class="btn btn-sm btn-custom-info">⚙️ Manage</a>
+                            }
+                            @if (User.IsInRole("Student"))
+                            {
+                                <a asp-controller="Modules" asp-action="MyMaterials" asp-route-courseId="@item.Id" class="btn btn-sm btn-custom-dark">📂 View</a>
+                            }
+                            @if (User.IsInRole("Instructor"))
+                            {
+                                <a asp-controller="Modules" asp-action="CourseMaterials" asp-route-courseId="@item.Id" class="btn btn-sm btn-custom-dark me-1">📂 View</a>
+                                <a asp-controller="Modules" asp-action="Index" asp-route-courseId="@item.Id" class="btn btn-sm btn-custom-info">⚙️ Manage</a>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -95,12 +70,13 @@
     </div>
 </div>
 
+<!-- CSS جوه نفس الصفحة -->
 <style>
     .btn-custom-dark {
         background-color: #2C3E50;
         color: #fff;
         border-radius: 8px;
-        padding: 8px 16px;
+        padding: 6px 14px;
         font-weight: 600;
         transition: 0.3s;
     }
@@ -114,21 +90,15 @@
         background-color: #17a2b8;
         color: #fff;
         border-radius: 8px;
-        padding: 8px 16px;
+        padding: 6px 14px;
         font-weight: 600;
         transition: 0.3s;
     }
 
         .btn-custom-info:hover {
-            background-color: #138496; 
+            background-color: #138496;
             color: #fff;
         }
-
-    .btn-info {
-        background-color: #17a2b8;
-        border: none;
-        border-radius: 6px;
-    }
 
     .btn-warning {
         background-color: #ffc107;

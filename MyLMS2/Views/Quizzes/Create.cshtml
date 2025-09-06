@@ -1,40 +1,46 @@
 ﻿@model MyLMS2.Models.Quiz
+
 @{
     ViewData["Title"] = "Create Quiz";
-    Layout = "_quizelayout";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-@if (User.IsInRole("Admin"))
+@if (User.IsInRole("Admin") || User.IsInRole("Instructor"))
 {
-    <h2>Create New Quiz</h2>
-    <form asp-action="Create" method="post">
-        <div class="form-group">
-            <label asp-for="Title"></label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
+    <div class="container mt-4">
+        <h2 class="text-center text-white py-2 rounded mb-4" style="background:#2C3E50;">➕ Create New Quiz</h2>
+
+        <div class="card shadow-lg border-0">
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label" style="color:#2C3E50;"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label" style="color:#2C3E50;"></label>
+                        <textarea asp-for="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Duration" class="form-label" style="color:#2C3E50;"></label>
+                        <input asp-for="Duration" type="number" class="form-control" />
+                        <span asp-validation-for="Duration" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="CourseId" class="form-label" style="color:#2C3E50;"></label>
+                        <select asp-for="CourseId" class="form-select" asp-items="ViewBag.CourseId"></select>
+                        <span asp-validation-for="CourseId" class="text-danger"></span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div>
         </div>
-        <div class="form-group">
-            <label asp-for="Description"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="Duration"></label>
-            <input asp-for="Duration" type="number" class="form-control" />
-            <span asp-validation-for="Duration" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="CourseId" class="control-label"></label>
-            <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
-            <span asp-validation-for="CourseId" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Save</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
-    </form>
+    </div>
 }
 else
 {
-    <div class="alert alert-danger">
-        You do not have permission to create a quiz.
-    </div>
+    <div class="alert alert-danger text-center mt-4">You do not have permission to create a quiz.</div>
 }

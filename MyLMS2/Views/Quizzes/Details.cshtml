@@ -2,40 +2,75 @@
 
 @{
     ViewData["Title"] = "Quiz Details";
-    Layout = "_quizelayout";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
 }
 
-<h2>@Model.Title</h2>
-<p>@Model.Description</p>
-<p><b>Duration:</b> @Model.Duration minutes</p>
+<div class="container mt-4">
+    <h2 class="text-white py-2 rounded mb-4 text-center" style="background:#2C3E50;">📄 @Model.Title</h2>
+    <div class="card shadow-lg border-0">
+        <div class="card-body">
+            <p class="text-muted">@Model.Description</p>
+            <p style="color:#2C3E50;"><b>Duration:</b> @Model.Duration minutes</p>
 
-@if (User.IsInRole("Admin") || User.IsInRole("Instructor"))
-{
-    <h3>Students' Scores</h3>
-    @if (ViewBag.StudentsScores != null && (ViewBag.StudentsScores as List<MyLMS2.Models.StudentScoreViewModel>).Any())
-    {
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Score</th>
-                    <th>Percentage</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var s in ViewBag.StudentsScores as List<MyLMS2.Models.StudentScoreViewModel>)
+            <hr />
+
+            <h3 style="color:#2C3E50;">📌 Questions</h3>
+            @if (Model.Questions != null && Model.Questions.Any())
+            {
+                <table class="table table-bordered table-hover align-middle style=" color:#2C3E50;"">
+                    <thead class="table-dark text-center">
+                        <tr>
+                            <th>#</th>
+                            <th>Question</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Questions.Count; i++)
+                        {
+                            <tr>
+                                <td class="text-center">@(@i + 1)</td>
+                                <td>@Model.Questions.ElementAt(i).Text</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p class="text-muted">No questions added yet.</p>
+            }
+
+            <hr />
+            @if (User.IsInRole("Admin") || User.IsInRole("Instructor"))
+            {
+                <h3 style="color:#2C3E50;">📊 Students' Scores</h3>
+                @if (ViewBag.StudentsScores != null && (ViewBag.StudentsScores as List<MyLMS2.Models.StudentScoreViewModel>).Any())
                 {
-                    <tr>
-                        <td>@s.StudentName</td>
-                        <td>@s.Score / @s.Total</td>
-                        <td>@s.Percentage %</td>
-                    </tr>
+                    <table class="table table-striped table-bordered text-center" style="color:#2C3E50;">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Student</th>
+                                <th>Score</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var s in ViewBag.StudentsScores as List<MyLMS2.Models.StudentScoreViewModel>)
+                            {
+                                <tr>
+                                    <td>@s.StudentName</td>
+                                    <td>@s.Score / @s.Total</td>
+                                    <td>@s.Percentage %</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <p>No students have taken this quiz yet.</p>
-    }
-}
+                else
+                {
+                    <p class="text-muted">No students have taken this quiz yet.</p>
+                }
+            }
+        </div>
+    </div>
+</div>

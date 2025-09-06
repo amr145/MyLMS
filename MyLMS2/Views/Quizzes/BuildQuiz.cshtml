@@ -1,0 +1,86 @@
+﻿@model MyLMS2.Models.Quiz
+
+@{
+    ViewData["Title"] = "Build Quiz";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center text-white py-2 rounded mb-4"
+        style="background:#2C3E50; max-width:600px; margin:0 auto;">
+        📝 Build Quiz - @Model.Title
+    </h2>
+
+    <form asp-action="BuildQuiz" method="post">
+        <input type="hidden" name="quizId" value="@Model.Id" />
+
+        <div id="questions-container" style="color:#2C3E50;"></div>
+
+        <div class="text-center mt-3">
+            <button type="button" class="btn btn-success me-2" onclick="addQuestion()">➕ Add Question</button>
+            <button type="submit" class="btn btn-custom-dark">💾 Submit Quiz</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .question-card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background: #f8f9fa;
+    }
+
+    .question-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .btn-custom-dark {
+        background-color: #2C3E50;
+        color: #fff;
+        border-radius: 6px;
+        padding: 6px 14px;
+        font-weight: 600;
+        transition: 0.3s;
+        border: none;
+    }
+
+        .btn-custom-dark:hover {
+            background-color: #1A252F;
+        }
+</style>
+
+@section Scripts {
+    <script>
+        let questionIndex = 0;
+
+        function addQuestion() {
+            const container = document.getElementById("questions-container");
+
+            let questionHtml = `
+                <div class="question-card">
+                    <div class="question-header">Question ${questionIndex + 1}</div>
+                    <input type="text" name="Questions[${questionIndex}].Text" class="form-control mb-3" placeholder="Enter question text..." required />
+
+                    <div class="options">
+                        ${[0,1,2,3].map(i => `
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">Option ${i + 1}</span>
+                                <input type="text" name="Questions[${questionIndex}].AnswerOptions[${i}].Text" class="form-control" placeholder="Enter option text..." required />
+                                <div class="input-group-text">
+                                    <input type="radio" name="Questions[${questionIndex}].CorrectOption" value="${i}" required />
+                                    Correct
+                                </div>
+                            </div>
+                        `).join("")}
+                    </div>
+                </div>
+            `;
+
+            container.insertAdjacentHTML("beforeend", questionHtml);
+            questionIndex++;
+        }
+    </script>
+}
