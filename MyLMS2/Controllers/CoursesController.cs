@@ -321,7 +321,21 @@ namespace MyLMS2.Controllers
         }
 
 
-        
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Materials(int id)
+        {
+            var course = await _context.Courses
+                .Include(c => c.Modules) // جلب الماتيريل المرتبطة بالكورس
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            if (course == null) return NotFound();
+
+            return View(course);
+        }
+
+
+
+
 
 
 

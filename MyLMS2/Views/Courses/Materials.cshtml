@@ -1,0 +1,55 @@
+﻿@model MyLMS2.Models.Course
+
+@{
+    ViewData["Title"] = "Course Materials";
+    Layout = "~/Views/Shared/_Layout2.cshtml";
+}
+
+<h2>📘 Materials for @Model.Title</h2>
+
+@if (Model.Modules == null || !Model.Modules.Any())
+{
+    <div class="alert alert-warning">No materials found for this course.</div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Files</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var module in Model.Modules)
+            {
+                <tr>
+                    <td>@module.Title</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(module.PdfPath))
+                        {
+                            <a href="@module.PdfPath" target="_blank" class="btn btn-sm btn-danger">📄 PDF</a>
+                        }
+                        @if (!string.IsNullOrEmpty(module.WordPath))
+                        {
+                            <a href="@module.WordPath" target="_blank" class="btn btn-sm btn-primary">📝 Word</a>
+                        }
+                        @if (!string.IsNullOrEmpty(module.PptPath))
+                        {
+                            <a href="@module.PptPath" target="_blank" class="btn btn-sm btn-warning">📊 PPT</a>
+                        }
+                        @if (!string.IsNullOrEmpty(module.AudioPath))
+                        {
+                            <a href="@module.AudioPath" target="_blank" class="btn btn-sm btn-success">🎧 Audio</a>
+                        }
+                        @if (!string.IsNullOrEmpty(module.VideoPath))
+                        {
+                            <a href="@module.VideoPath" target="_blank" class="btn btn-sm btn-dark">🎥 Video</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
