@@ -1,0 +1,66 @@
+﻿@model IEnumerable<MyLMS2.Models.Enrollment>
+
+@{
+    ViewData["Title"] = "My Courses (Instructor)";
+    var groupedCourses = Model.GroupBy(e => e.Course).ToList();
+}
+
+<div class="container mt-4">
+    <h2 class="text-warning mb-4">👨‍🏫 My Courses</h2>
+
+    <table class="table table-bordered table-striped shadow">
+        <thead class="table-warning">
+            <tr>
+                <th>Course Title</th>
+                <th>Students</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var group in groupedCourses)
+            {
+                <tr>
+                    <td>@group.Key?.Title</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#studentsModal-@group.Key?.Id">
+                            👥 View Students
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="studentsModal-@group.Key?.Id" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-warning">
+                                        <h5 class="modal-title">Students in @group.Key?.Title</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        @if (group.Any())
+                                        {
+                                            <ul class="list-group">
+                                                @foreach (var enrollment in group)
+                                                {
+                                                    <li class="list-group-item">
+                                                        @enrollment.Student?.UserName
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted">No students enrolled yet.</p>
+                                        }
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
