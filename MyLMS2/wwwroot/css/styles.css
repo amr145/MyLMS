@@ -11052,3 +11052,15 @@ html {
     display: flex;
     align-items: center;
 }
+.nav-item form {
+    display: inline; /* أو inline-block */
+    margin: 0;
+    padding: 0;
+}
+.logout-btn {
+    font-weight: bold;
+}
+
+.logout-btn:hover {
+    color: red !important; 
+}
