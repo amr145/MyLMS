@@ -11,7 +11,7 @@
         📝 Build Quiz - @Model.Title
     </h2>
 
-    <form asp-action="BuildQuiz" method="post">
+    <form asp-action="BuildQuiz" method="post" id="buildQuizForm">
         <input type="hidden" name="quizId" value="@Model.Id" />
 
         <div id="questions-container" style="color:#2C3E50;"></div>
@@ -82,5 +82,15 @@
             container.insertAdjacentHTML("beforeend", questionHtml);
             questionIndex++;
         }
+
+        // اخفاء زر Build Quiz بعد الضغط على Submit
+        const form = document.getElementById("buildQuizForm");
+        form.addEventListener("submit", function() {
+            const quizId = '@Model.Id';
+            const buildBtn = window.opener?.document.querySelector(`.build-btn[data-quiz-id='${quizId}']`);
+            if (buildBtn) {
+                buildBtn.style.display = "none";
+            }
+        });
     </script>
 }

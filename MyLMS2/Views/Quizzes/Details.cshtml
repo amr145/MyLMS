@@ -17,7 +17,7 @@
             <h3 style="color:#2C3E50;">📌 Questions</h3>
             @if (Model.Questions != null && Model.Questions.Any())
             {
-                <table class="table table-bordered table-hover align-middle style=" color:#2C3E50;"">
+                <table class="table table-bordered table-hover align-middle" style="color:#2C3E50;">
                     <thead class="table-dark text-center">
                         <tr>
                             <th>#</th>
@@ -41,30 +41,22 @@
             }
 
             <hr />
+
             @if (User.IsInRole("Admin") || User.IsInRole("Instructor"))
             {
-                <h3 style="color:#2C3E50;">📊 Students' Scores</h3>
-                @if (ViewBag.StudentsScores != null && (ViewBag.StudentsScores as List<MyLMS2.Models.StudentScoreViewModel>).Any())
+
+
+                <hr />
+
+                <h3 style="color:#2C3E50;">📝 Students Who Took This Quiz</h3>
+                @if (ViewBag.StudentsTaken != null && ((List<string>)ViewBag.StudentsTaken).Any())
                 {
-                    <table class="table table-striped table-bordered text-center" style="color:#2C3E50;">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>Student</th>
-                                <th>Score</th>
-                                <th>Percentage</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var s in ViewBag.StudentsScores as List<MyLMS2.Models.StudentScoreViewModel>)
-                            {
-                                <tr>
-                                    <td>@s.StudentName</td>
-                                    <td>@s.Score / @s.Total</td>
-                                    <td>@s.Percentage %</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                    <ul>
+                        @foreach (var student in (List<string>)ViewBag.StudentsTaken)
+                        {
+                            <li style="color :black">@student</li>
+                        }
+                    </ul>
                 }
                 else
                 {

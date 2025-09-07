@@ -8,7 +8,7 @@
 <div class="container mt-4">
     <h2 class="text-center text-white py-2 rounded mb-4"
         style="background:#2C3E50; max-width:400px; margin:0 auto;">
-        📚 All Quizzes
+        📚 Quizzes
     </h2>
 
     @if (User.IsInRole("Admin"))
@@ -34,7 +34,17 @@
                     @if (!Model.Any())
                     {
                         <tr>
-                            <td colspan="5" class="text-center text-muted">No quizzes available.</td>
+                            <td colspan="5" class="text-center text-muted">
+                                @if (User.IsInRole("Student") || User.IsInRole("Instructor"))
+                                {
+                                    <text>You have no quizzes available in your courses.</text>
+                                }
+                                else
+                                {
+                                    <text>No quizzes available.</text>
+                                }
+
+                            </td>
                         </tr>
                     }
                     else
@@ -59,7 +69,12 @@
 
                                     @if (User.IsInRole("Instructor"))
                                     {
-                                        <a asp-action="BuildQuiz" asp-route-quizId="@quiz.Id" class="btn btn-warning btn-sm me-1">🛠 Build Quiz</a>
+                                        <a asp-action="BuildQuiz"
+                                           asp-route-quizId="@quiz.Id"
+                                           class="btn btn-warning btn-sm me-1 build-btn"
+                                           data-quiz-id="@quiz.Id">
+                                            🛠 Build Quiz
+                                        </a>
                                     }
 
                                     @if (User.IsInRole("Admin"))
@@ -89,5 +104,9 @@
 
     .card {
         border-radius: 12px;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
     }
 </style>
