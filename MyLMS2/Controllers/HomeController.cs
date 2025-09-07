@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MyLMS2.Models;
 using MyLMS2.ViewModels;
@@ -26,6 +26,12 @@ namespace MyLMS2.Controllers
 
         public async Task<IActionResult> Index()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                // لو مش مسجل دخول، ارجع على Login
+                return RedirectToPage("/Account/Login", new { area = "Identity" });
+            }
+
             var user = await _userManager.GetUserAsync(User);
 
             if (user != null)
@@ -61,15 +67,13 @@ namespace MyLMS2.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Index");
 
-            
             var coursesCount = await _context.Courses
                                     .Where(c => c.InstructorId == user.Id)
                                     .CountAsync();
 
-           
             var latestCourses = await _context.Courses
                                     .Where(c => c.InstructorId == user.Id)
-                                    .OrderByDescending(c => c.Id) 
+                                    .OrderByDescending(c => c.Id)
                                     .Take(3)
                                     .ToListAsync();
 
@@ -89,16 +93,14 @@ namespace MyLMS2.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return RedirectToAction("Index");
 
-            
             var enrolledCoursesCount = await _context.Enrollments
                                         .Where(e => e.StudentId == user.Id)
                                         .CountAsync();
 
-            
             var latestCourses = await _context.Enrollments
                                         .Where(e => e.StudentId == user.Id)
                                         .Include(e => e.Course)
-                                        .OrderByDescending(e => e.Id) 
+                                        .OrderByDescending(e => e.Id)
                                         .Take(3)
                                         .Select(e => e.Course)
                                         .ToListAsync();

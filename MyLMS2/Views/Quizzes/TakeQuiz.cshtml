@@ -7,47 +7,54 @@
 
 <div class="container mt-4">
     <h2 class="text-center text-white py-2 rounded mb-4"
-        style="background:#2C3E50; max-width:600px; margin:0 auto; font-weight:bold;">
+        style="background:#2C3E50; max-width:600px; font-weight:bold; margin:0 auto;">
         📝 @Model.Title
     </h2>
 
-    <p class="text-white fw-bold">New Final Exam</p>
     <p class="text-white fw-bold">Duration: @Model.Duration minutes</p>
 
     @if (User.IsInRole("Student"))
     {
-        <form asp-action="SubmitQuiz" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="quizId" value="@Model.Id" />
-
-            @for (int i = 0; i < (Model.Questions?.Count() ?? 0); i++)
-            {
-                var question = Model.Questions.ElementAt(i);
-
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-header" style="background:#2C3E50; color:#fff; font-weight:bold;">
-                        Q@(i + 1): @question.Text
-                    </div>
-                    <div class="card-body">
-                        @foreach (var option in question.AnswerOptions)
-                        {
-                            <div class="form-check mb-2">
-                                <input type="radio"
-                                       class="form-check-input"
-                                       name="answers[@question.Id]"
-                                       value="@option.Id"
-                                       required />
-                                <label class="form-check-label" style="color:#000;">@option.Text</label>
-                            </div>
-                        }
-                    </div>
-                </div>
-            }
-
-            <div class="text-center mt-3">
-                <button type="submit" class="btn btn-custom-dark">💾 Submit Quiz</button>
+        @if (ViewBag.AlreadyTaken != null && (bool)ViewBag.AlreadyTaken)
+        {
+            <div class="alert alert-success text-center">
+                You already took this quiz! <br />
             </div>
-        </form>
+        }
+        else
+        {
+            <form asp-action="SubmitQuiz" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="quizId" value="@Model.Id" />
+
+                @for (int i = 0; i < (Model.Questions?.Count() ?? 0); i++)
+                {
+                    var question = Model.Questions.ElementAt(i);
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header" style="background:#2C3E50; color:#fff; font-weight:bold;">
+                            Q@(i + 1): @question.Text
+                        </div>
+                        <div class="card-body">
+                            @foreach (var option in question.AnswerOptions)
+                            {
+                                <div class="form-check mb-2">
+                                    <input type="radio"
+                                           class="form-check-input"
+                                           name="answers[@question.Id]"
+                                           value="@option.Id"
+                                           required />
+                                    <label class="form-check-label" style="color:#000;">@option.Text</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-custom-dark">💾 Submit Quiz</button>
+                </div>
+            </form>
+        }
     }
     else
     {
@@ -68,8 +75,8 @@
         border-radius: 6px;
         padding: 8px 20px;
         font-weight: 600;
-        transition: 0.3s;
         border: none;
+        transition: 0.3s;
     }
 
         .btn-custom-dark:hover {

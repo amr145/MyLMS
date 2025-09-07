@@ -79,10 +79,11 @@
     </li>
     <li class="nav-item">
         <form asp-area="Identity" asp-page="/Account/Logout"
-              asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+              asp-route-returnUrl="@Url.Page("/Account/Login", new { area = "Identity" })">
             <button type="submit" class="logout-btn">LOGOUT</button>
         </form>
     </li>
+
 }
 else
 {
